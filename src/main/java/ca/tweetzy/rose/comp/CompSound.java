@@ -42,7 +42,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * <b>XSound</b> - Universal Minecraft Sound Support<br>
+ * <b>CompSound</b> - Universal Minecraft Sound Support<br>
  * 1.13 and above as priority.
  * <p>
  * Sounds are thread-safe. But this doesn't mean you should
@@ -60,7 +60,7 @@ import java.util.concurrent.CompletableFuture;
  * @version 7.0.2
  * @see Sound
  */
-public enum XSound {
+public enum CompSound {
     AMBIENT_BASALT_DELTAS_ADDITIONS,
     AMBIENT_BASALT_DELTAS_LOOP,
     AMBIENT_BASALT_DELTAS_MOOD,
@@ -1278,19 +1278,19 @@ public enum XSound {
     WEATHER_RAIN_ABOVE;
 
     /**
-     * Cached list of {@link XSound#values()} to avoid allocating memory for
+     * Cached list of {@link CompSound#values()} to avoid allocating memory for
      * calling the method every time.
      *
      * @since 2.0.0
      */
-    public static final XSound[] VALUES = values();
+    public static final CompSound[] VALUES = values();
 
     public static final float DEFAULT_VOLUME = 1.0f, DEFAULT_PITCH = 1.0f;
 
     @Nullable
     private final Sound sound;
 
-    XSound(@Nonnull String... legacies) {
+    CompSound(@Nonnull String... legacies) {
         Sound bukkitSound = Data.BUKKIT_NAMES.get(this.name());
         if (bukkitSound == null) {
             for (String legacy : legacies) {
@@ -1347,21 +1347,21 @@ public enum XSound {
     }
 
     /**
-     * Parses the XSound with the given name.
+     * Parses the CompSound with the given name.
      *
      * @param sound the name of the sound.
      *
-     * @return a matched XSound.
+     * @return a matched CompSound.
      * @since 1.0.0
      */
     @Nonnull
-    public static Optional<XSound> matchXSound(@Nonnull String sound) {
-        Validate.notEmpty(sound, "Cannot match XSound of a null or empty sound name");
+    public static Optional<CompSound> matchXSound(@Nonnull String sound) {
+        Validate.notEmpty(sound, "Cannot match CompSound of a null or empty sound name");
         return Optional.ofNullable(Data.NAMES.get(format(sound)));
     }
 
     /**
-     * Parses the XSound with the given bukkit sound.
+     * Parses the CompSound with the given bukkit sound.
      *
      * @param sound the Bukkit sound.
      *
@@ -1370,8 +1370,8 @@ public enum XSound {
      * @since 2.0.0
      */
     @Nonnull
-    public static XSound matchXSound(@Nonnull Sound sound) {
-        Objects.requireNonNull(sound, "Cannot match XSound of a null sound");
+    public static CompSound matchXSound(@Nonnull Sound sound) {
+        Objects.requireNonNull(sound, "Cannot match CompSound of a null sound");
         return Objects.requireNonNull(Data.NAMES.get(sound.name()), () -> "Unsupported sound: " + sound.name());
     }
 
@@ -1427,7 +1427,7 @@ public enum XSound {
      * This can help to avoid parsing the sound properties multiple times.
      * A simple usage of using it in a loop is:
      * <blockquote><pre>
-     *     Record record = XSound.parse(player, location, sound, false).join();
+     *     Record record = CompSound.parse(player, location, sound, false).join();
      *     // Loop:
      *     if (record != null) record.play();
      * </pre></blockquote>
@@ -1467,7 +1467,7 @@ public enum XSound {
             playAtLocation = true;
         } else playAtLocation = false;
 
-        Optional<XSound> soundType = matchXSound(name);
+        Optional<CompSound> soundType = matchXSound(name);
         if (!soundType.isPresent()) return null;
 
         float volume = DEFAULT_VOLUME;
@@ -1501,7 +1501,7 @@ public enum XSound {
         Objects.requireNonNull(player, "Cannot stop playing musics from null player");
 
         // We don't need to cache because it's rarely used.
-        XSound[] musics = {
+        CompSound[] musics = {
                 MUSIC_CREATIVE, MUSIC_CREDITS,
                 MUSIC_DISC_11, MUSIC_DISC_13, MUSIC_DISC_BLOCKS, MUSIC_DISC_CAT, MUSIC_DISC_CHIRP,
                 MUSIC_DISC_FAR, MUSIC_DISC_MALL, MUSIC_DISC_MELLOHI, MUSIC_DISC_STAL,
@@ -1510,7 +1510,7 @@ public enum XSound {
                 MUSIC_NETHER_CRIMSON_FOREST, MUSIC_NETHER_WARPED_FOREST
         };
 
-        for (XSound music : musics) {
+        for (CompSound music : musics) {
             Sound sound = music.parseSound();
             if (sound != null) player.stopSound(sound);
         }
@@ -1562,7 +1562,7 @@ public enum XSound {
     }
 
     /**
-     * Parses the XSound as a {@link Sound} based on the server version.
+     * Parses the CompSound as a {@link Sound} based on the server version.
      *
      * @return the vanilla sound.
      * @since 1.0.0
@@ -1708,7 +1708,7 @@ public enum XSound {
          *
          * @since 3.1.0
          */
-        private static final Map<String, XSound> NAMES = new HashMap<>();
+        private static final Map<String, CompSound> NAMES = new HashMap<>();
 
         static {
             for (Sound sound : Sound.values()) BUKKIT_NAMES.put(sound.name(), sound);
@@ -1721,13 +1721,13 @@ public enum XSound {
      * @since 3.0.0
      */
     public static class Record {
-        @Nonnull public final XSound sound;
+        @Nonnull public final CompSound sound;
         public final float volume, pitch;
         public boolean playAtLocation;
         @Nullable public Player player;
         @Nullable public Location location;
 
-        public Record(@Nonnull XSound sound, @Nullable Player player, @Nullable Location location, float volume, float pitch, boolean playAtLocation) {
+        public Record(@Nonnull CompSound sound, @Nullable Player player, @Nullable Location location, float volume, float pitch, boolean playAtLocation) {
             this.sound = Objects.requireNonNull(sound, "Sound cannot be null");
             this.player = player;
             this.location = location;

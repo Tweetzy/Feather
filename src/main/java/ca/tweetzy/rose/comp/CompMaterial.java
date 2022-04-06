@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * <b>XMaterial</b> - Data Values/Pre-flattening<br>
+ * <b>CompMaterial</b> - Data Values/Pre-flattening<br>
  * 1.13 and above as priority.
  * <p>
  * This class is mainly designed to support {@link ItemStack}. If you want to use it on blocks, you'll have to use
@@ -55,7 +55,7 @@ import java.util.regex.PatternSyntaxException;
  * Materials (1.12): https://helpch.at/docs/1.12.2/index.html?org/bukkit/Material.html
  * Material IDs: https://minecraft-ids.grahamedgecombe.com/
  * Material Source Code: https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/Material.java
- * XMaterial v1: https://www.spigotmc.org/threads/329630/
+ * CompMaterial v1: https://www.spigotmc.org/threads/329630/
  * <p>
  * This class will throw a "unsupported material" error if someone tries to use an item with an invalid data value which can only happen in 1.12 servers and below or when the
  * utility is missing a new material in that specific version.
@@ -67,7 +67,7 @@ import java.util.regex.PatternSyntaxException;
  * @see Material
  * @see ItemStack
  */
-public enum XMaterial {
+public enum CompMaterial {
     ACACIA_BOAT("BOAT_ACACIA"),
     ACACIA_BUTTON("WOOD_BUTTON"),
     ACACIA_DOOR("ACACIA_DOOR", "ACACIA_DOOR_ITEM"),
@@ -1396,27 +1396,27 @@ public enum XMaterial {
 
 
     /**
-     * Cached array of {@link XMaterial#values()} to avoid allocating memory for
+     * Cached array of {@link CompMaterial#values()} to avoid allocating memory for
      * calling the method every time.
      *
      * @since 2.0.0
      */
-    public static final XMaterial[] VALUES = values();
+    public static final CompMaterial[] VALUES = values();
 
     /**
      * We don't want to use {@link Enums#getIfPresent(Class, String)} to avoid a few checks.
      *
      * @since 5.1.0
      */
-    private static final Map<String, XMaterial> NAMES = new HashMap<>();
+    private static final Map<String, CompMaterial> NAMES = new HashMap<>();
 
     /**
      * Guava (Google Core Libraries for Java)'s cache for performance and timed caches.
-     * For strings that match a certain XMaterial. Mostly cached for configs.
+     * For strings that match a certain CompMaterial. Mostly cached for configs.
      *
      * @since 1.0.0
      */
-    private static final Cache<String, XMaterial> NAME_CACHE = CacheBuilder.newBuilder()
+    private static final Cache<String, CompMaterial> NAME_CACHE = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.HOURS)
             .build();
     /**
@@ -1449,7 +1449,7 @@ public enum XMaterial {
      */
     private static final short MAX_ID = 2267;
     /**
-     * <b>XMaterial Paradox (Duplication Check)</b>
+     * <b>CompMaterial Paradox (Duplication Check)</b>
      * <p>
      * A set of duplicated material names in 1.13 and 1.12 that will conflict with the legacy names.
      * Values are the new material names. This map also contains illegal elements. Check the static initializer for more info.
@@ -1462,7 +1462,7 @@ public enum XMaterial {
     private static final Set<String> DUPLICATED;
 
     static {
-        for (XMaterial material : VALUES) NAMES.put(material.name(), material);
+        for (CompMaterial material : VALUES) NAMES.put(material.name(), material);
     }
 
     static {
@@ -1503,7 +1503,7 @@ public enum XMaterial {
     @Nullable
     private final Material material;
 
-    XMaterial(int data, @Nonnull String... legacy) {
+    CompMaterial(int data, @Nonnull String... legacy) {
         this.data = (byte) data;
         this.legacy = legacy;
 
@@ -1517,7 +1517,7 @@ public enum XMaterial {
         this.material = mat;
     }
 
-    XMaterial(String... legacy) {this(0, legacy);}
+    CompMaterial(String... legacy) {this(0, legacy);}
 
     /**
      * Checks if the version is 1.13 Aquatic Update or higher.
@@ -1531,7 +1531,7 @@ public enum XMaterial {
      * @see #getVersion()
      * @see #supports(int)
      * @since 1.0.0
-     * @deprecated Use {@code XMaterial.supports(13)} instead. This method name can be confusing.
+     * @deprecated Use {@code CompMaterial.supports(13)} instead. This method name can be confusing.
      */
     @Deprecated
     public static boolean isNewVersion() {
@@ -1551,7 +1551,7 @@ public enum XMaterial {
      * </blockquote>
      *
      * @since 2.0.0
-     * @deprecated Use {@code !XMaterial.supports(9)} instead.
+     * @deprecated Use {@code !CompMaterial.supports(9)} instead.
      */
     @Deprecated
     public static boolean isOneEight() {
@@ -1559,7 +1559,7 @@ public enum XMaterial {
     }
 
     /**
-     * Gets the XMaterial with this name similar to {@link #valueOf(String)}
+     * Gets the CompMaterial with this name similar to {@link #valueOf(String)}
      * without throwing an exception.
      *
      * @param name the name of the material.
@@ -1568,7 +1568,7 @@ public enum XMaterial {
      * @since 5.1.0
      */
     @Nonnull
-    private static Optional<XMaterial> getIfPresent(@Nonnull String name) {
+    private static Optional<CompMaterial> getIfPresent(@Nonnull String name) {
         return Optional.ofNullable(NAMES.get(name));
     }
 
@@ -1591,12 +1591,12 @@ public enum XMaterial {
      * @since 1.0.0
      */
     @Nullable
-    private static XMaterial requestOldXMaterial(@Nonnull String name, byte data) {
+    private static CompMaterial requestOldXMaterial(@Nonnull String name, byte data) {
         String holder = name + data;
-        XMaterial cache = NAME_CACHE.getIfPresent(holder);
+        CompMaterial cache = NAME_CACHE.getIfPresent(holder);
         if (cache != null) return cache;
 
-        for (XMaterial material : VALUES) {
+        for (CompMaterial material : VALUES) {
             // Not using material.name().equals(name) check is intended.
             if ((data == UNKNOWN_DATA_VALUE || data == material.data) && material.anyMatchLegacy(name)) {
                 NAME_CACHE.put(holder, material);
@@ -1608,7 +1608,7 @@ public enum XMaterial {
     }
 
     /**
-     * Parses the given material name as an XMaterial with a given data
+     * Parses the given material name as an CompMaterial with a given data
      * value in the string if attached. Check {@link #matchXMaterialWithData(String)} for more info.
      *
      * @see #matchXMaterialWithData(String)
@@ -1616,9 +1616,9 @@ public enum XMaterial {
      * @since 2.0.0
      */
     @Nonnull
-    public static Optional<XMaterial> matchXMaterial(@Nonnull String name) {
+    public static Optional<CompMaterial> matchXMaterial(@Nonnull String name) {
         Validate.notEmpty(name, "Cannot match a material with null or empty material name");
-        Optional<XMaterial> oldMatch = matchXMaterialWithData(name);
+        Optional<CompMaterial> oldMatch = matchXMaterialWithData(name);
         return oldMatch.isPresent() ? oldMatch : matchDefinedXMaterial(format(name), UNKNOWN_DATA_VALUE);
     }
 
@@ -1635,12 +1635,12 @@ public enum XMaterial {
      *
      * @param name the material string that consists of the material name, data and separator character.
      *
-     * @return the parsed XMaterial.
+     * @return the parsed CompMaterial.
      * @see #matchXMaterial(String)
      * @since 3.0.0
      */
     @Nonnull
-    private static Optional<XMaterial> matchXMaterialWithData(@Nonnull String name) {
+    private static Optional<CompMaterial> matchXMaterialWithData(@Nonnull String name) {
         int index = name.indexOf(':');
         if (index != -1) {
             String mat = format(name.substring(0, index));
@@ -1657,7 +1657,7 @@ public enum XMaterial {
     }
 
     /**
-     * Parses the given material as an XMaterial.
+     * Parses the given material as an CompMaterial.
      *
      * @throws IllegalArgumentException may be thrown as an unexpected exception.
      * @see #matchDefinedXMaterial(String, byte)
@@ -1665,26 +1665,26 @@ public enum XMaterial {
      * @since 2.0.0
      */
     @Nonnull
-    public static XMaterial matchXMaterial(@Nonnull Material material) {
+    public static CompMaterial matchXMaterial(@Nonnull Material material) {
         Objects.requireNonNull(material, "Cannot match null material");
         return matchDefinedXMaterial(material.name(), UNKNOWN_DATA_VALUE)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported material with no data value: " + material.name()));
     }
 
     /**
-     * Parses the given item as an XMaterial using its material and data value (durability)
+     * Parses the given item as an CompMaterial using its material and data value (durability)
      * if not a damageable item {@link ItemStack#getDurability()}.
      *
      * @param item the ItemStack to match.
      *
-     * @return an XMaterial if matched any.
+     * @return an CompMaterial if matched any.
      * @throws IllegalArgumentException may be thrown as an unexpected exception.
      * @see #matchXMaterial(Material)
      * @since 2.0.0
      */
     @Nonnull
     @SuppressWarnings("deprecation")
-    public static XMaterial matchXMaterial(@Nonnull ItemStack item) {
+    public static CompMaterial matchXMaterial(@Nonnull ItemStack item) {
         Objects.requireNonNull(item, "Cannot match null ItemStack");
         String material = item.getType().name();
         byte data = (byte) (Data.ISFLAT || item.getType().getMaxDurability() > 0 ? 0 : item.getDurability());
@@ -1716,49 +1716,49 @@ public enum XMaterial {
         // if (!Data.ISFLAT && item.hasItemMeta() && item.getItemMeta() instanceof org.bukkit.inventory.meta.MapMeta) return FILLED_MAP;
 
         // No orElseThrow, I don't want to deal with Java's final variable bullshit.
-        Optional<XMaterial> result = matchDefinedXMaterial(material, data);
+        Optional<CompMaterial> result = matchDefinedXMaterial(material, data);
         if (result.isPresent()) return result.get();
         throw new IllegalArgumentException("Unsupported material from item: " + material + " (" + data + ')');
     }
 
     /**
-     * The main method that parses the given material name and data value as an XMaterial.
+     * The main method that parses the given material name and data value as an CompMaterial.
      * All the values passed to this method will not be null or empty and are formatted correctly.
      *
      * @param name the formatted name of the material.
      * @param data the data value of the material. Is always 0 or {@link #UNKNOWN_DATA_VALUE} when {@link Data#ISFLAT}
      *
-     * @return an XMaterial (with the same data value if specified)
+     * @return an CompMaterial (with the same data value if specified)
      * @see #matchXMaterial(Material)
      * @see #matchXMaterial(int, byte)
      * @see #matchXMaterial(ItemStack)
      * @since 3.0.0
      */
     @Nonnull
-    protected static Optional<XMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
+    protected static Optional<CompMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
         // if (!Boolean.valueOf(Boolean.getBoolean(Boolean.TRUE.toString())).equals(Boolean.FALSE.booleanValue())) return null;
         Boolean duplicated = null;
         boolean isAMap = name.equalsIgnoreCase("MAP");
 
         // Do basic number and boolean checks before accessing more complex enum stuff.
         if (Data.ISFLAT || (!isAMap && data <= 0 && !(duplicated = isDuplicated(name)))) {
-            Optional<XMaterial> xMaterial = getIfPresent(name);
+            Optional<CompMaterial> xMaterial = getIfPresent(name);
             if (xMaterial.isPresent()) return xMaterial;
         }
         // Usually flat versions wouldn't pass this point, but some special materials do.
 
-        XMaterial oldXMaterial = requestOldXMaterial(name, data);
-        if (oldXMaterial == null) {
+        CompMaterial oldCompMaterial = requestOldXMaterial(name, data);
+        if (oldCompMaterial == null) {
             // Special case. Refer to FILLED_MAP for more info.
             return (data >= 0 && isAMap) ? Optional.of(FILLED_MAP) : Optional.empty();
         }
 
-        if (!Data.ISFLAT && oldXMaterial.isPlural() && (duplicated == null ? isDuplicated(name) : duplicated)) return getIfPresent(name);
-        return Optional.of(oldXMaterial);
+        if (!Data.ISFLAT && oldCompMaterial.isPlural() && (duplicated == null ? isDuplicated(name) : duplicated)) return getIfPresent(name);
+        return Optional.of(oldCompMaterial);
     }
 
     /**
-     * <b>XMaterial Paradox (Duplication Check)</b>
+     * <b>CompMaterial Paradox (Duplication Check)</b>
      * Checks if the material has any duplicates.
      * <p>
      * <b>Example:</b>
@@ -1775,13 +1775,13 @@ public enum XMaterial {
     }
 
     /**
-     * Gets the XMaterial based on the material's ID (Magic Value) and data value.<br>
+     * Gets the CompMaterial based on the material's ID (Magic Value) and data value.<br>
      * You should avoid using this for performance issues.
      *
      * @param id   the ID (Magic value) of the material.
      * @param data the data value of the material.
      *
-     * @return a parsed XMaterial with the same ID and data value.
+     * @return a parsed CompMaterial with the same ID and data value.
      * @see #matchXMaterial(ItemStack)
      * @since 2.0.0
      * @deprecated this method loops through all the available materials and matches their ID using {@link #getId()}
@@ -1790,9 +1790,9 @@ public enum XMaterial {
      */
     @Nonnull
     @Deprecated
-    public static Optional<XMaterial> matchXMaterial(int id, byte data) {
+    public static Optional<CompMaterial> matchXMaterial(int id, byte data) {
         if (id < 0 || id > MAX_ID || data < 0) return Optional.empty();
-        for (XMaterial materials : VALUES) {
+        for (CompMaterial materials : VALUES) {
             if (materials.data == data && materials.getId() == id) return Optional.of(materials);
         }
         return Optional.empty();
@@ -1856,12 +1856,12 @@ public enum XMaterial {
     }
 
     /**
-     * XMaterial Paradox (Duplication Check)
+     * CompMaterial Paradox (Duplication Check)
      * I've concluded that this is just an infinite loop that keeps
      * going around the Singular Form and the Plural Form materials. A waste of brain cells and a waste of time.
      * This solution works just fine anyway.
      * <p>
-     * A solution for XMaterial Paradox.
+     * A solution for CompMaterial Paradox.
      * Manually parses the duplicated materials to find the exact material based on the server version.
      * If the name ends with "S" -> Plural Form Material.
      * Plural methods are only plural if they're also {@link #DUPLICATED}
@@ -1884,7 +1884,7 @@ public enum XMaterial {
      * <p>
      * <b>Example:</b>
      * <blockquote><pre>
-     *     XMaterial material = {@link #matchXMaterial(ItemStack)};
+     *     CompMaterial material = {@link #matchXMaterial(ItemStack)};
      *     if (material.isOneOf(plugin.getConfig().getStringList("disabled-items")) return;
      * </pre></blockquote>
      * <br>
@@ -1941,7 +1941,7 @@ public enum XMaterial {
             }
 
             // Direct Object Equals
-            Optional<XMaterial> xMat = matchXMaterial(comp);
+            Optional<CompMaterial> xMat = matchXMaterial(comp);
             if (xMat.isPresent() && xMat.get() == this) return true;
         }
         return false;
@@ -2044,7 +2044,7 @@ public enum XMaterial {
     }
 
     /**
-     * Parses an item from this XMaterial.
+     * Parses an item from this CompMaterial.
      * Uses data values on older versions.
      *
      * @return an ItemStack with the same material (and data value if in older versions.)
@@ -2060,9 +2060,9 @@ public enum XMaterial {
     }
 
     /**
-     * Parses the material of this XMaterial.
+     * Parses the material of this CompMaterial.
      *
-     * @return the material related to this XMaterial based on the server version.
+     * @return the material related to this CompMaterial based on the server version.
      * @since 1.0.0
      */
     @Nullable
@@ -2119,9 +2119,9 @@ public enum XMaterial {
             case "NETHER_BRICK":
 
                 // Illegal Elements
-                // Since both 1.12 and 1.13 have <type>_DOOR XMaterial will use it
+                // Since both 1.12 and 1.13 have <type>_DOOR CompMaterial will use it
                 // for 1.12 to parse the material, but it needs <type>_DOOR_ITEM.
-                // We'll trick XMaterial into thinking this needs to be parsed
+                // We'll trick CompMaterial into thinking this needs to be parsed
                 // using the old methods.
                 // Some of these materials have their enum name added to the legacy list as well.
             case "DARK_OAK_DOOR":

@@ -53,13 +53,13 @@ import java.util.UUID;
  *
  * @author Crypto Morin
  * @version 3.1.2
- * @see XMaterial
+ * @see CompMaterial
  * @see ReflectionUtils
  */
 public class SkullUtils {
 	protected static final MethodHandle PROFILE_GETTER, PROFILE_SETTER;
 	private static final String VALUE_PROPERTY = "{\"textures\":{\"SKIN\":{\"url\":\"";
-	private static final boolean SUPPORTS_UUID = XMaterial.supports(12);
+	private static final boolean SUPPORTS_UUID = CompMaterial.supports(12);
 	private static final String TEXTURES = "https://textures.minecraft.net/texture/";
 
 	static {
@@ -91,7 +91,7 @@ public class SkullUtils {
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	public static ItemStack getSkull(@Nonnull UUID id) {
-		ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+		ItemStack head = CompMaterial.PLAYER_HEAD.parseItem();
 		SkullMeta meta = (SkullMeta) head.getItemMeta();
 
 		if (SUPPORTS_UUID) meta.setOwningPlayer(Bukkit.getOfflinePlayer(id));
