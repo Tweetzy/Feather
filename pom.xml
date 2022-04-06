@@ -38,6 +38,7 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
     </repositories>
     <dependencies>
         <dependency>
@@ -45,6 +46,7 @@
             <artifactId>spigot</artifactId>
             <version>1.18.2-R0.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
@@ -79,6 +81,7 @@
             <artifactId>HikariCP</artifactId>
             <version>3.2.0</version>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -145,6 +148,7 @@
                                     <pattern>de.tr7zw.changeme.nbtapi</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}.third_party.de.tr7zw.nbtapi</shadedPattern>
                                 </relocation>
+
                             </relocations>
 
                             <filters>

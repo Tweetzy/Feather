@@ -1,8 +1,8 @@
 package ca.tweetzy.rose.plugin;
 
+import com.google.gson.JsonObject;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
 
 /**
  * Date Created: April 06 2022
@@ -25,7 +25,7 @@ public final class PluginInfo {
 	private String spigotLink;
 	private String songodaLink;
 	private String polymartLink;
-	private JSONObject json;
+	private JsonObject json;
 
 	public PluginInfo(JavaPlugin javaPlugin, int songodaId, String icon, String coreLibraryVersion) {
 		this.javaPlugin = javaPlugin;
@@ -92,11 +92,11 @@ public final class PluginInfo {
 		this.polymartLink = polymartLink;
 	}
 
-	public JSONObject getJson() {
+	public JsonObject getJson() {
 		return this.json;
 	}
 
-	public void setJson(JSONObject json) {
+	public void setJson(JsonObject json) {
 		this.json = json;
 	}
 
