@@ -1,5 +1,6 @@
 package ca.tweetzy.rose;
 
+import ca.tweetzy.rose.database.DataManagerAbstract;
 import ca.tweetzy.rose.metrics.Metrics;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -129,6 +131,44 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 	protected void emergencyStop() {
 		this.emergencyStop = true;
 		Bukkit.getPluginManager().disablePlugin(this);
+	}
+
+
+	protected void shutdownDataManager(DataManagerAbstract dataManager) {
+		// 3 minutes is overkill, but we just want to make sure
+		shutdownDataManager(dataManager, 15, TimeUnit.MINUTES.toSeconds(3));
+	}
+
+	protected void shutdownDataManager(DataManagerAbstract dataManager, int reportInterval, long secondsUntilForceShutdown) {
+		dataManager.shutdownTaskQueue();
+
+		while (!dataManager.isTaskQueueTerminated() && secondsUntilForceShutdown > 0) {
+			long secondsToWait = Math.min(reportInterval, secondsUntilForceShutdown);
+
+			try {
+				if (dataManager.waitForShutdown(secondsToWait, TimeUnit.SECONDS)) {
+					break;
+				}
+
+				getLogger().info(String.format("A DataManager is currently working on %d tasks... " +
+								"We are giving him another %d seconds until we forcefully shut him down " +
+								"(continuing to report in %d second intervals)",
+						dataManager.getTaskQueueSize(), secondsUntilForceShutdown, reportInterval));
+			} catch (InterruptedException ignore) {
+			} finally {
+				secondsUntilForceShutdown -= secondsToWait;
+			}
+		}
+
+		if (!dataManager.isTaskQueueTerminated()) {
+			int unfinishedTasks = dataManager.forceShutdownTaskQueue().size();
+
+			if (unfinishedTasks > 0) {
+				getLogger().log(Level.WARNING,
+						String.format("A DataManager has been forcefully terminated with %d unfinished tasks - " +
+								"This can be a serious problem, please report it to us (Songoda)!", unfinishedTasks));
+			}
+		}
 	}
 
 	/**
