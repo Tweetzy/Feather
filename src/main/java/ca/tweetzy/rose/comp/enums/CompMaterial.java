@@ -20,7 +20,7 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ca.tweetzy.rose.comp;
+package ca.tweetzy.rose.comp.enums;
 
 import com.google.common.base.Enums;
 import com.google.common.cache.Cache;
@@ -1431,7 +1431,7 @@ public enum CompMaterial {
      * The maximum data value in the pre-flattening update which belongs to {@link #VILLAGER_SPAWN_EGG}<br>
      * https://minecraftitemids.com/types/spawn-egg
      *
-     * @see #matchXMaterialWithData(String)
+     * @see #matchCompMaterialWithData(String)
      * @since 8.0.0
      */
     private static final byte MAX_DATA_VALUE = 120;
@@ -1587,11 +1587,11 @@ public enum CompMaterial {
      * When using 1.13+, this helps to find the old material name
      * with its data value using a cached search for optimization.
      *
-     * @see #matchDefinedXMaterial(String, byte)
+     * @see #matchDefinedCompMaterial(String, byte)
      * @since 1.0.0
      */
     @Nullable
-    private static CompMaterial requestOldXMaterial(@Nonnull String name, byte data) {
+    private static CompMaterial requestOldCompMaterial(@Nonnull String name, byte data) {
         String holder = name + data;
         CompMaterial cache = NAME_CACHE.getIfPresent(holder);
         if (cache != null) return cache;
@@ -1609,17 +1609,17 @@ public enum CompMaterial {
 
     /**
      * Parses the given material name as an CompMaterial with a given data
-     * value in the string if attached. Check {@link #matchXMaterialWithData(String)} for more info.
+     * value in the string if attached. Check {@link #matchCompMaterialWithData(String)} for more info.
      *
-     * @see #matchXMaterialWithData(String)
-     * @see #matchDefinedXMaterial(String, byte)
+     * @see #matchCompMaterialWithData(String)
+     * @see #matchDefinedCompMaterial(String, byte)
      * @since 2.0.0
      */
     @Nonnull
-    public static Optional<CompMaterial> matchXMaterial(@Nonnull String name) {
+    public static Optional<CompMaterial> matchCompMaterial(@Nonnull String name) {
         Validate.notEmpty(name, "Cannot match a material with null or empty material name");
-        Optional<CompMaterial> oldMatch = matchXMaterialWithData(name);
-        return oldMatch.isPresent() ? oldMatch : matchDefinedXMaterial(format(name), UNKNOWN_DATA_VALUE);
+        Optional<CompMaterial> oldMatch = matchCompMaterialWithData(name);
+        return oldMatch.isPresent() ? oldMatch : matchDefinedCompMaterial(format(name), UNKNOWN_DATA_VALUE);
     }
 
     /**
@@ -1636,20 +1636,20 @@ public enum CompMaterial {
      * @param name the material string that consists of the material name, data and separator character.
      *
      * @return the parsed CompMaterial.
-     * @see #matchXMaterial(String)
+     * @see #matchCompMaterial(String)
      * @since 3.0.0
      */
     @Nonnull
-    private static Optional<CompMaterial> matchXMaterialWithData(@Nonnull String name) {
+    private static Optional<CompMaterial> matchCompMaterialWithData(@Nonnull String name) {
         int index = name.indexOf(':');
         if (index != -1) {
             String mat = format(name.substring(0, index));
             try {
                 // We don't use Byte.parseByte because we have our own range check.
                 byte data = (byte) Integer.parseInt(StringUtils.deleteWhitespace(name.substring(index + 1)));
-                return data >= 0 && data < MAX_DATA_VALUE ? matchDefinedXMaterial(mat, data) : matchDefinedXMaterial(mat, UNKNOWN_DATA_VALUE);
+                return data >= 0 && data < MAX_DATA_VALUE ? matchDefinedCompMaterial(mat, data) : matchDefinedCompMaterial(mat, UNKNOWN_DATA_VALUE);
             } catch (NumberFormatException ignored) {
-                return matchDefinedXMaterial(mat, UNKNOWN_DATA_VALUE);
+                return matchDefinedCompMaterial(mat, UNKNOWN_DATA_VALUE);
             }
         }
 
@@ -1660,14 +1660,14 @@ public enum CompMaterial {
      * Parses the given material as an CompMaterial.
      *
      * @throws IllegalArgumentException may be thrown as an unexpected exception.
-     * @see #matchDefinedXMaterial(String, byte)
-     * @see #matchXMaterial(ItemStack)
+     * @see #matchDefinedCompMaterial(String, byte)
+     * @see #matchCompMaterial(ItemStack)
      * @since 2.0.0
      */
     @Nonnull
-    public static CompMaterial matchXMaterial(@Nonnull Material material) {
+    public static CompMaterial matchCompMaterial(@Nonnull Material material) {
         Objects.requireNonNull(material, "Cannot match null material");
-        return matchDefinedXMaterial(material.name(), UNKNOWN_DATA_VALUE)
+        return matchDefinedCompMaterial(material.name(), UNKNOWN_DATA_VALUE)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported material with no data value: " + material.name()));
     }
 
@@ -1679,12 +1679,12 @@ public enum CompMaterial {
      *
      * @return an CompMaterial if matched any.
      * @throws IllegalArgumentException may be thrown as an unexpected exception.
-     * @see #matchXMaterial(Material)
+     * @see #matchCompMaterial(Material)
      * @since 2.0.0
      */
     @Nonnull
     @SuppressWarnings("deprecation")
-    public static CompMaterial matchXMaterial(@Nonnull ItemStack item) {
+    public static CompMaterial matchCompMaterial(@Nonnull ItemStack item) {
         Objects.requireNonNull(item, "Cannot match null ItemStack");
         String material = item.getType().name();
         byte data = (byte) (Data.ISFLAT || item.getType().getMaxDurability() > 0 ? 0 : item.getDurability());
@@ -1716,7 +1716,7 @@ public enum CompMaterial {
         // if (!Data.ISFLAT && item.hasItemMeta() && item.getItemMeta() instanceof org.bukkit.inventory.meta.MapMeta) return FILLED_MAP;
 
         // No orElseThrow, I don't want to deal with Java's final variable bullshit.
-        Optional<CompMaterial> result = matchDefinedXMaterial(material, data);
+        Optional<CompMaterial> result = matchDefinedCompMaterial(material, data);
         if (result.isPresent()) return result.get();
         throw new IllegalArgumentException("Unsupported material from item: " + material + " (" + data + ')');
     }
@@ -1729,25 +1729,25 @@ public enum CompMaterial {
      * @param data the data value of the material. Is always 0 or {@link #UNKNOWN_DATA_VALUE} when {@link Data#ISFLAT}
      *
      * @return an CompMaterial (with the same data value if specified)
-     * @see #matchXMaterial(Material)
-     * @see #matchXMaterial(int, byte)
-     * @see #matchXMaterial(ItemStack)
+     * @see #matchCompMaterial(Material)
+     * @see #matchCompMaterial(int, byte)
+     * @see #matchCompMaterial(ItemStack)
      * @since 3.0.0
      */
     @Nonnull
-    protected static Optional<CompMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
+    protected static Optional<CompMaterial> matchDefinedCompMaterial(@Nonnull String name, byte data) {
         // if (!Boolean.valueOf(Boolean.getBoolean(Boolean.TRUE.toString())).equals(Boolean.FALSE.booleanValue())) return null;
         Boolean duplicated = null;
         boolean isAMap = name.equalsIgnoreCase("MAP");
 
         // Do basic number and boolean checks before accessing more complex enum stuff.
         if (Data.ISFLAT || (!isAMap && data <= 0 && !(duplicated = isDuplicated(name)))) {
-            Optional<CompMaterial> xMaterial = getIfPresent(name);
-            if (xMaterial.isPresent()) return xMaterial;
+            Optional<CompMaterial> CompMaterial = getIfPresent(name);
+            if (CompMaterial.isPresent()) return CompMaterial;
         }
         // Usually flat versions wouldn't pass this point, but some special materials do.
 
-        CompMaterial oldCompMaterial = requestOldXMaterial(name, data);
+        CompMaterial oldCompMaterial = requestOldCompMaterial(name, data);
         if (oldCompMaterial == null) {
             // Special case. Refer to FILLED_MAP for more info.
             return (data >= 0 && isAMap) ? Optional.of(FILLED_MAP) : Optional.empty();
@@ -1770,7 +1770,7 @@ public enum CompMaterial {
      * @since 2.0.0
      */
     private static boolean isDuplicated(@Nonnull String name) {
-        // Don't use matchXMaterial() since this method is being called from matchXMaterial() itself and will cause a StackOverflowError.
+        // Don't use matchCompMaterial() since this method is being called from matchCompMaterial() itself and will cause a StackOverflowError.
         return DUPLICATED.contains(name);
     }
 
@@ -1782,7 +1782,7 @@ public enum CompMaterial {
      * @param data the data value of the material.
      *
      * @return a parsed CompMaterial with the same ID and data value.
-     * @see #matchXMaterial(ItemStack)
+     * @see #matchCompMaterial(ItemStack)
      * @since 2.0.0
      * @deprecated this method loops through all the available materials and matches their ID using {@link #getId()}
      * which takes a really long time. Plugins should no longer support IDs. If you want, you can make a {@link Map} cache yourself.
@@ -1790,7 +1790,7 @@ public enum CompMaterial {
      */
     @Nonnull
     @Deprecated
-    public static Optional<CompMaterial> matchXMaterial(int id, byte data) {
+    public static Optional<CompMaterial> matchCompMaterial(int id, byte data) {
         if (id < 0 || id > MAX_ID || data < 0) return Optional.empty();
         for (CompMaterial materials : VALUES) {
             if (materials.data == data && materials.getId() == id) return Optional.of(materials);
@@ -1884,7 +1884,7 @@ public enum CompMaterial {
      * <p>
      * <b>Example:</b>
      * <blockquote><pre>
-     *     CompMaterial material = {@link #matchXMaterial(ItemStack)};
+     *     CompMaterial material = {@link #matchCompMaterial(ItemStack)};
      *     if (material.isOneOf(plugin.getConfig().getStringList("disabled-items")) return;
      * </pre></blockquote>
      * <br>
@@ -1941,7 +1941,7 @@ public enum CompMaterial {
             }
 
             // Direct Object Equals
-            Optional<CompMaterial> xMat = matchXMaterial(comp);
+            Optional<CompMaterial> xMat = matchCompMaterial(comp);
             if (xMat.isPresent() && xMat.get() == this) return true;
         }
         return false;
@@ -1971,7 +1971,7 @@ public enum CompMaterial {
     }
 
     /**
-     * Checks if the given material name matches any of this xmaterial's legacy material names.
+     * Checks if the given material name matches any of this CompMaterial's legacy material names.
      * All the values passed to this method will not be null or empty and are formatted correctly.
      *
      * @param name the material name to check.
@@ -2013,7 +2013,7 @@ public enum CompMaterial {
      * Spigot added material ID support back in 1.16+
      *
      * @return the ID of the material or <b>-1</b> if it's not a legacy material or the server doesn't support the material.
-     * @see #matchXMaterial(int, byte)
+     * @see #matchCompMaterial(int, byte)
      * @since 2.2.0
      */
     @SuppressWarnings("deprecation")

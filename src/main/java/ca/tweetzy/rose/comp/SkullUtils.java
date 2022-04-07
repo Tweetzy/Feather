@@ -21,6 +21,7 @@
  */
 package ca.tweetzy.rose.comp;
 
+import ca.tweetzy.rose.comp.enums.CompMaterial;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

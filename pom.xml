@@ -59,8 +59,15 @@
             <version>2.9.2</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>dev.dejvokep</groupId>
+            <artifactId>boosted-yaml</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Non-Spigot Plugins -->
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -81,6 +88,7 @@
             <artifactId>HikariCP</artifactId>
             <version>3.2.0</version>
         </dependency>
+
 
     </dependencies>
 
@@ -120,49 +128,51 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.3.1-SNAPSHOT</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>ca.tweetzy:*</include>
+                            <include>com.zaxxer:HikariCP</include>
+                            <include>de.tr7zw:item-nbt-api</include>
+                            <include>dev.dejvokep:boosted-yaml</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <includes>
+                                <include>ca/</include>
+                                <include>de/tr7zw/</include>
+                                <include>dev/dejvokep/</include>
+                                <include>META-INF/maven/ca.tweetzy/RoseCore/</include>
+                            </includes>
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.zaxxer</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.third_party.com.zaxxer</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.third_party.de.tr7zw.nbtapi</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>dev.dejvokep.boostedyaml</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.third_party.boostedyaml</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>shaded</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createDependencyReducedPom>true</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>ca.tweetzy:*</include>
-                                    <include>com.zaxxer:HikariCP</include>
-                                    <include>de.tr7zw:item-nbt-api</include>
-                                </includes>
-                            </artifactSet>
-
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.zaxxer</pattern>
-                                    <shadedPattern>${project.groupId}.${project.artifactId}.third_party.com.zaxxer</shadedPattern>
-                                </relocation>
-
-                                <relocation>
-                                    <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                                    <shadedPattern>${project.groupId}.${project.artifactId}.third_party.de.tr7zw.nbtapi</shadedPattern>
-                                </relocation>
-
-                            </relocations>
-
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <includes>
-                                        <include>ca/</include>
-                                        <include>de/tr7zw/</include>
-                                        <include>META-INF/MANIFEST.MF</include>
-                                        <include>META-INF/maven/ca.tweetzy/RoseCore/</include>
-                                    </includes>
-                                </filter>
-                            </filters>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
