@@ -1,5 +1,6 @@
 package ca.tweetzy.rose;
 
+import ca.tweetzy.rose.utils.colors.ColorFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -8,6 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Date Created: April 07 2022
@@ -18,11 +22,15 @@ import org.bukkit.scheduler.BukkitTask;
 public final class Common {
 
     public static String colorize(String string) {
-        return string;
+        return ColorFormatter.process(string);
+    }
+
+    public static List<String> colorize(List<String> strings) {
+        return strings.stream().map(Common::colorize).collect(Collectors.toList());
     }
 
     // ------------------------------------------------------------------------------------------------------------
-    // Scheduling
+    // Scheduling from https://github.com/kangarko/Foundation
     // ------------------------------------------------------------------------------------------------------------
 
     /**
@@ -84,10 +92,6 @@ public final class Common {
     public static BukkitTask runLaterAsync(final Runnable task) {
         return runLaterAsync(0, task);
     }
-
-    // ------------------------------------------------------------------------------------------------------------
-    // Bukkit scheduling
-    // ------------------------------------------------------------------------------------------------------------
 
     /**
      * Runs the task async even if the plugin is disabled for some reason.
