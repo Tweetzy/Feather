@@ -13,6 +13,7 @@ import ca.tweetzy.rose.gui.methods.Closable;
 import ca.tweetzy.rose.gui.methods.Droppable;
 import ca.tweetzy.rose.gui.methods.Openable;
 import ca.tweetzy.rose.gui.methods.Pagable;
+import ca.tweetzy.rose.utils.QuickItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -41,7 +42,7 @@ public class Gui {
     protected final Map<Integer, Boolean> unlockedCells = new HashMap<>();
     protected final Map<Integer, ItemStack> cellItems = new HashMap<>();
     protected final Map<Integer, Map<ClickType, Clickable>> conditionalButtons = new HashMap<>();
-    protected ItemStack blankItem = CompMaterial.BLACK_STAINED_GLASS_PANE.parseItem();
+    protected ItemStack blankItem = QuickItem.of(CompMaterial.BLACK_STAINED_GLASS_PANE).name(" ").make();
     protected int nextPageIndex = -1, prevPageIndex = -1;
     protected ItemStack nextPageItem, prevPageItem;
     protected ItemStack nextPage, prevPage;

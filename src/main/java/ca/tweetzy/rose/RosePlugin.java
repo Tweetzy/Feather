@@ -2,7 +2,6 @@ package ca.tweetzy.rose;
 
 import ca.tweetzy.rose.database.DataManagerAbstract;
 import ca.tweetzy.rose.metrics.Metrics;
-import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
@@ -24,11 +23,17 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 	protected ConsoleCommandSender console = Bukkit.getConsoleSender();
 	private boolean emergencyStop = false;
 
-	static {
-		/* NBT-API */
-		MinecraftVersion.getLogger().setLevel(Level.WARNING);
-		MinecraftVersion.disableUpdateCheck();
-	}
+    /**
+     * The instance of this plugin
+     */
+    private static volatile RosePlugin instance;
+
+    public static RosePlugin getInstance() {
+        if (instance == null) {
+            instance = JavaPlugin.getPlugin(RosePlugin.class);
+        }
+        return instance;
+    }
 
 	/*
 	-------------------------------------------------------------------------
@@ -39,6 +44,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 	@Override
 	public final void onLoad() {
 		try {
+		    getInstance();
 			onWake();
 		} catch (final Throwable throwable) {
 			criticalErrorOnPluginStartup(throwable);
