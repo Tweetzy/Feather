@@ -27,9 +27,9 @@ public final class PluginInfo {
 	private String polymartLink;
 	private JsonObject json;
 
-	public PluginInfo(JavaPlugin javaPlugin, int songodaId, String icon, String coreLibraryVersion) {
+	public PluginInfo(JavaPlugin javaPlugin, int tweetzyId, String icon, String coreLibraryVersion) {
 		this.javaPlugin = javaPlugin;
-		this.tweetzyId = songodaId;
+		this.tweetzyId = tweetzyId;
 		this.coreIcon = icon;
 		this.icon = Material.getMaterial(icon);
 		this.coreLibraryVersion = coreLibraryVersion;
