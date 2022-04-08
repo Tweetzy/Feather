@@ -37,6 +37,7 @@ public final class MathUtil {
      * Return a roman number representation of the given number
      *
      * @param number to be converted
+     *
      * @return converted number
      */
     public static String toRoman(final int number) {

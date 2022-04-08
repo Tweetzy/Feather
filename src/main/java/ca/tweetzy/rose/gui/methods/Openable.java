@@ -5,5 +5,5 @@ import ca.tweetzy.rose.gui.events.GuiOpenEvent;
 
 public interface Openable {
 
-	void onOpen(GuiOpenEvent event);
+    void onOpen(GuiOpenEvent event);
 }

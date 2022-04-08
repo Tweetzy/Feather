@@ -5,5 +5,5 @@ import ca.tweetzy.rose.gui.events.GuiClickEvent;
 
 public interface Clickable {
 
-	void onClick(GuiClickEvent event);
+    void onClick(GuiClickEvent event);
 }

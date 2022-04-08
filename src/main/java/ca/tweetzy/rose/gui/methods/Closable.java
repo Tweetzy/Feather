@@ -5,5 +5,5 @@ import ca.tweetzy.rose.gui.events.GuiCloseEvent;
 
 public interface Closable {
 
-	void onClose(GuiCloseEvent event);
+    void onClose(GuiCloseEvent event);
 }

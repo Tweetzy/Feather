@@ -5,5 +5,5 @@ import ca.tweetzy.rose.gui.events.GuiDropItemEvent;
 
 public interface Droppable {
 
-	boolean onDrop(GuiDropItemEvent event);
+    boolean onDrop(GuiDropItemEvent event);
 }

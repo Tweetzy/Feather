@@ -5,5 +5,5 @@ import ca.tweetzy.rose.gui.events.GuiPageEvent;
 
 public interface Pagable {
 
-	void onPageChange(GuiPageEvent event);
+    void onPageChange(GuiPageEvent event);
 }

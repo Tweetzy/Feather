@@ -5,7 +5,7 @@ package ca.tweetzy.rose.utils.colors;
  * Time Created: 2:29 p.m.
  *
  * @author Kiran Hart
- * (!) - Edit of Peaches_MLG's RGB Color API
+ *         (!) - Edit of Peaches_MLG's RGB Color API
  */
 public interface ColorPattern {
 

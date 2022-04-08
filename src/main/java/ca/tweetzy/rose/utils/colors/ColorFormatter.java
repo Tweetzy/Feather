@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Time Created: 2:34 p.m.
  *
  * @author Kiran Hart
- * (!) - Edit of Peaches_MLG's RGB Color API
+ *         (!) - Edit of Peaches_MLG's RGB Color API
  */
 public final class ColorFormatter {
 
@@ -66,6 +66,7 @@ public final class ColorFormatter {
      * Thanks to Distressing for helping with the regex <3
      *
      * @param string The string we want to process
+     *
      * @since 1.0.0
      */
     @Nonnull
@@ -82,7 +83,9 @@ public final class ColorFormatter {
      * Processes multiple strings in a list.
      *
      * @param strings The list of the strings we are processing
+     *
      * @return The list of processed strings
+     *
      * @since 1.0.3
      */
     @Nonnull
@@ -97,6 +100,7 @@ public final class ColorFormatter {
      *
      * @param string The string we want to color
      * @param color  The color we want to set it to
+     *
      * @since 1.0.0
      */
     @Nonnull
@@ -110,6 +114,7 @@ public final class ColorFormatter {
      * @param string The string we want to color
      * @param start  The starting gradiant
      * @param end    The ending gradiant
+     *
      * @since 1.0.0
      */
     @Nonnull
@@ -125,6 +130,7 @@ public final class ColorFormatter {
      *
      * @param string     The string which should have rainbow colors
      * @param saturation The saturation of the rainbow colors
+     *
      * @since 1.0.3
      */
     @Nonnull
@@ -139,6 +145,7 @@ public final class ColorFormatter {
      * Gets a color from hex code.
      *
      * @param string The hex code of the color
+     *
      * @since 1.0.0
      */
     @Nonnull
@@ -152,7 +159,9 @@ public final class ColorFormatter {
      * ColorPatterns.
      *
      * @param string The String which should be stripped
+     *
      * @return The stripped string without color codes
+     *
      * @since 1.0.5
      */
     @Nonnull
@@ -200,7 +209,9 @@ public final class ColorFormatter {
      *
      * @param step       How many colors we return
      * @param saturation The saturation of the rainbow
+     *
      * @return The array of colors
+     *
      * @since 1.0.3
      */
     @Nonnull
@@ -226,6 +237,7 @@ public final class ColorFormatter {
      * @param start The starting color.
      * @param end   The ending color.
      * @param step  How many colors we return.
+     *
      * @author TheViperShow
      * @since 1.0.0
      */
@@ -235,7 +247,7 @@ public final class ColorFormatter {
         int stepR = Math.abs(start.getRed() - end.getRed()) / (step - 1);
         int stepG = Math.abs(start.getGreen() - end.getGreen()) / (step - 1);
         int stepB = Math.abs(start.getBlue() - end.getBlue()) / (step - 1);
-        int[] direction = new int[]{
+        int[] direction = new int[] {
                 start.getRed() < end.getRed() ? +1 : -1,
                 start.getGreen() < end.getGreen() ? +1 : -1,
                 start.getBlue() < end.getBlue() ? +1 : -1
@@ -257,6 +269,7 @@ public final class ColorFormatter {
      * Returns the closest legacy color from an rgb color
      *
      * @param color The color we want to transform
+     *
      * @since 1.0.0
      */
     @Nonnull
@@ -279,6 +292,7 @@ public final class ColorFormatter {
      * In most cases, you shouldn't be using this method.
      *
      * @return the simplified major version.
+     *
      * @since 1.0.0
      */
     private static int getVersion() {

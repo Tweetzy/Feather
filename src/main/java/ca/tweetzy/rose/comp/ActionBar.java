@@ -39,7 +39,10 @@ import java.lang.invoke.MethodType;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
-import static ca.tweetzy.rose.comp.ReflectionUtils.*;
+import static ca.tweetzy.rose.comp.ReflectionUtils.NMS;
+import static ca.tweetzy.rose.comp.ReflectionUtils.getNMSClass;
+import static ca.tweetzy.rose.comp.ReflectionUtils.sendPacket;
+import static ca.tweetzy.rose.comp.ReflectionUtils.v;
 
 
 /**
@@ -150,7 +153,8 @@ public final class ActionBar {
         PACKET_PLAY_OUT_CHAT = packet;
     }
 
-    private ActionBar() {}
+    private ActionBar() {
+    }
 
     /**
      * Sends an action bar to a player.

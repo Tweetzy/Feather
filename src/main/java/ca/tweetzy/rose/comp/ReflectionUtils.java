@@ -145,7 +145,8 @@ public final class ReflectionUtils {
         GET_HANDLE = getHandle;
     }
 
-    private ReflectionUtils() {}
+    private ReflectionUtils() {
+    }
 
     /**
      * This method is purely for readability.
@@ -167,9 +168,12 @@ public final class ReflectionUtils {
      * @param version the version to compare the server version with.
      *
      * @return true if the version is equal or newer, otherwise false.
+     *
      * @since 4.0.0
      */
-    public static boolean supports(int version) {return VER >= version;}
+    public static boolean supports(int version) {
+        return VER >= version;
+    }
 
     /**
      * Get a NMS (net.minecraft.server) class which accepts a package for 1.17 compatibility.
@@ -178,6 +182,7 @@ public final class ReflectionUtils {
      * @param name       the name of the class.
      *
      * @return the NMS class or null if not found.
+     *
      * @since 4.0.0
      */
     @Nullable
@@ -192,6 +197,7 @@ public final class ReflectionUtils {
      * @param name the name of the class.
      *
      * @return the NMS class or null if not found.
+     *
      * @since 1.0.0
      */
     @Nullable
@@ -212,6 +218,7 @@ public final class ReflectionUtils {
      * @param packets the packets to send.
      *
      * @return the async thread handling the packet.
+     *
      * @see #sendPacketSync(Player, Object...)
      * @since 1.0.0
      */
@@ -276,6 +283,7 @@ public final class ReflectionUtils {
      * @param name the name of the class to load.
      *
      * @return the CraftBukkit class or null if not found.
+     *
      * @since 1.0.0
      */
     @Nullable
