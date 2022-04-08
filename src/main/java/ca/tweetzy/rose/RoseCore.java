@@ -1,6 +1,7 @@
 package ca.tweetzy.rose;
 
 import ca.tweetzy.rose.plugin.PluginInfo;
+import ca.tweetzy.rose.utils.Common;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +24,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Date Created: April 06 2022
@@ -32,8 +32,6 @@ import java.util.logging.Logger;
  * @author Kiran Hart
  */
 public final class RoseCore {
-
-    private final static Logger logger = Logger.getLogger("RoseCore");
 
     private final static int coreRevision = 1;
 
@@ -153,7 +151,7 @@ public final class RoseCore {
     }
 
     private void register(JavaPlugin plugin, int pluginID, String icon, String libraryVersion) {
-        logger.info(getPrefix() + "Hooked " + plugin.getName() + ".");
+        RosePlugin.getInstance().getConsole().sendMessage(Common.colorize("&8[#00ce74RoseCore&8]#CBCBCB Hooked into #00ce74" + plugin.getDescription().getName()));
         PluginInfo info = new PluginInfo(plugin, pluginID, icon, libraryVersion);
 
         // todo locale updater
@@ -195,10 +193,6 @@ public final class RoseCore {
 
     public static String getPrefix() {
         return "[RoseCore] ";
-    }
-
-    public static Logger getLogger() {
-        return logger;
     }
 
     public static boolean isRegistered(String plugin) {

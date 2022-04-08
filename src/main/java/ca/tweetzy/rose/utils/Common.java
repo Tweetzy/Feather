@@ -1,7 +1,9 @@
-package ca.tweetzy.rose;
+package ca.tweetzy.rose.utils;
 
+import ca.tweetzy.rose.RosePlugin;
 import ca.tweetzy.rose.utils.colors.ColorFormatter;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -21,12 +23,32 @@ import java.util.stream.Collectors;
  */
 public final class Common {
 
+    public static String PREFIX = "[RoseCore]";
+
+    public static void tell(CommandSender sender, String... messages) {
+        final String prefix = PREFIX.length() == 0 ? "" : PREFIX + " ";
+        for (String message : messages) {
+            sender.sendMessage(prefix + colorize(message));
+        }
+    }
+
+    public static void broadcast(String permission, String... messages) {
+        if (permission == null)
+            Bukkit.getOnlinePlayers().forEach(online -> tell(online, messages));
+        else
+            Bukkit.getOnlinePlayers().stream().filter(online -> online.hasPermission(permission)).forEach(filtered -> tell(filtered, messages));
+    }
+
     public static String colorize(String string) {
         return ColorFormatter.process(string);
     }
 
     public static List<String> colorize(List<String> strings) {
         return strings.stream().map(Common::colorize).collect(Collectors.toList());
+    }
+
+    public static void setPrefix(String prefix) {
+        PREFIX = prefix;
     }
 
     // ------------------------------------------------------------------------------------------------------------

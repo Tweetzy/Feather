@@ -1,5 +1,7 @@
 package ca.tweetzy.rose.utils;
 
+import ca.tweetzy.rose.exception.CalculatorException;
+
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -50,5 +52,114 @@ public final class MathUtil {
             return romanNumbers.get(number);
 
         return romanNumbers.get(literal) + toRoman(number - literal);
+    }
+
+    /**
+     * Evaluate the given expression
+     *
+     * @param expression math expression
+     * @return the calculated result
+     */
+    public static double calculate(final String expression) {
+        class Parser {
+            int pos = -1, c;
+
+            void eatChar() {
+                c = ++pos < expression.length() ? expression.charAt(pos) : -1;
+            }
+
+            void eatSpace() {
+                while (Character.isWhitespace(c))
+                    eatChar();
+            }
+
+            double parse() {
+                eatChar();
+
+                final double v = parseExpression();
+
+                if (c != -1)
+                    throw new CalculatorException("Unexpected: " + (char) c);
+
+                return v;
+            }
+
+            double parseExpression() {
+                double v = parseTerm();
+
+                for (;;) {
+                    eatSpace();
+
+                    if (c == '+') { // addition
+                        eatChar();
+                        v += parseTerm();
+                    } else if (c == '-') { // subtraction
+                        eatChar();
+                        v -= parseTerm();
+                    } else
+                        return v;
+
+                }
+            }
+
+            double parseTerm() {
+                double v = parseFactor();
+
+                for (;;) {
+                    eatSpace();
+
+                    if (c == '/') { // division
+                        eatChar();
+                        v /= parseFactor();
+                    } else if (c == '*' || c == '(') { // multiplication
+                        if (c == '*')
+                            eatChar();
+                        v *= parseFactor();
+                    } else
+                        return v;
+                }
+            }
+
+            double parseFactor() {
+                double v;
+                boolean negate = false;
+
+                eatSpace();
+
+                if (c == '+' || c == '-') { // unary plus & minus
+                    negate = c == '-';
+                    eatChar();
+                    eatSpace();
+                }
+
+                if (c == '(') { // brackets
+                    eatChar();
+                    v = parseExpression();
+                    if (c == ')')
+                        eatChar();
+                } else { // numbers
+                    final StringBuilder sb = new StringBuilder();
+
+                    while (c >= '0' && c <= '9' || c == '.') {
+                        sb.append((char) c);
+                        eatChar();
+                    }
+
+                    if (sb.length() == 0)
+                        throw new CalculatorException("Unexpected: " + (char) c);
+
+                    v = Double.parseDouble(sb.toString());
+                }
+                eatSpace();
+                if (c == '^') { // exponentiation
+                    eatChar();
+                    v = Math.pow(v, parseFactor());
+                }
+                if (negate)
+                    v = -v; // unary minus is applied after exponentiation; e.g. -3^2=-9
+                return v;
+            }
+        }
+        return new Parser().parse();
     }
 }

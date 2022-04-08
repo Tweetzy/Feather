@@ -2,7 +2,7 @@ package ca.tweetzy.rose;
 
 import ca.tweetzy.rose.configuration.Config;
 import ca.tweetzy.rose.database.DataManagerAbstract;
-import ca.tweetzy.rose.metrics.Metrics;
+import ca.tweetzy.rose.utils.Common;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -79,6 +79,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 
             // metrics
             if (this.getBStatsId() != -1) {
+                console.sendMessage(Common.colorize(String.format("&8[#00ce74RoseCore&8]#CBCBCB Enabling metrics for #00ce74%s", getDescription().getName())));
                 Metrics metrics = new Metrics(this, this.getBStatsId());
 
                 if (!this.getCustomMetricCharts().isEmpty())

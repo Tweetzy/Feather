@@ -35,6 +35,10 @@
             <layout>default</layout>
         </repository>
         <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -49,6 +53,12 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -72,11 +82,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.25</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>3.2.0</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -130,6 +142,7 @@
                             <artifact>*:*</artifact>
                             <includes>
                                 <include>ca/</include>
+                                <include>com/zaxxer</include>
                                 <include>META-INF/maven/ca.tweetzy/RoseCore/</include>
                             </includes>
                             <excludes>
@@ -142,6 +155,10 @@
                         <relocation>
                             <pattern>com.zaxxer</pattern>
                             <shadedPattern>${project.groupId}.${project.artifactId}.third_party.com.zaxxer</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.third_party.kyori</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
