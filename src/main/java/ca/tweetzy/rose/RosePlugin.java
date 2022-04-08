@@ -1,9 +1,11 @@
 package ca.tweetzy.rose;
 
+import ca.tweetzy.rose.configuration.Config;
 import ca.tweetzy.rose.database.DataManagerAbstract;
 import ca.tweetzy.rose.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +22,7 @@ import java.util.logging.Level;
  */
 public abstract class RosePlugin extends JavaPlugin implements Listener {
 
+    protected Config config = new Config(this);
     protected ConsoleCommandSender console = Bukkit.getConsoleSender();
     private boolean emergencyStop = false;
 
@@ -58,12 +61,21 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
             return;
         }
 
-        // TODO FANCY ENABLE MESSAGE
+        console.sendMessage(" "); // blank line to separate chatter
+        console.sendMessage(Common.colorize("#00a87f============================="));
+        console.sendMessage(Common.colorize(String.format("#00ce74%s &fv&e%s #CBCBCBby #00ce74Tweetzy", getDescription().getName(), getDescription().getVersion())));
+        console.sendMessage(Common.colorize(String.format("#00ce74Developer#CBCBCB: &e%s", String.join(", ", getDescription().getAuthors()))));
 
         try {
             // TODO LOCALE
 
             onFlight();
+
+            if (emergencyStop) {
+                console.sendMessage(Common.colorize("#8C1053~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
+                console.sendMessage(" ");
+                return;
+            }
 
             // metrics
             if (this.getBStatsId() != -1) {
@@ -75,9 +87,12 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 
         } catch (final Throwable throwable) {
             criticalErrorOnPluginStartup(throwable);
+            console.sendMessage(Common.colorize("#8C1053~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
+            console.sendMessage(" ");
             return;
         }
 
+        console.sendMessage(Common.colorize("#00a87f============================="));
         console.sendMessage(" ");
     }
 
@@ -88,6 +103,22 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         }
 
         onSleep();
+    }
+
+    @Override
+    public final void reloadConfig() {
+        this.config.load();
+        onStretch();
+    }
+
+    @Override
+    public FileConfiguration getConfig() {
+        return this.config.getFileConfig();
+    }
+
+    @Override
+    public void saveConfig() {
+        this.config.save();
     }
 
 	/*
@@ -113,6 +144,12 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
     protected void onSleep() {
     }
 
+    /**
+     * Called during {@link JavaPlugin#reloadConfig()}
+     */
+    protected void onStretch() {
+    }
+
     /*
     -------------------------------------------------------------------------
     Misc
@@ -131,7 +168,11 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
     }
 
     public ConsoleCommandSender getConsole() {
-        return console;
+        return this.console;
+    }
+
+    public Config getCoreConfig() {
+        return this.config;
     }
 
     protected void emergencyStop() {
