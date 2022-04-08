@@ -1,7 +1,7 @@
 package ca.tweetzy.rose.configuration;
 
-import ca.tweetzy.tweety.TweetyPlugin;
-import ca.tweetzy.tweety.remain.comp.CompMaterial;
+import ca.tweetzy.rose.RosePlugin;
+import ca.tweetzy.rose.comp.enums.CompMaterial;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,10 +111,10 @@ public class ConfigSetting {
     @NotNull
     public CompMaterial getMaterial() {
         String val = config.getString(key);
-        CompMaterial mat = CompMaterial.fromString(config.getString(key));
+        CompMaterial mat = CompMaterial.matchCompMaterial(config.getString(key)).orElse(null);
 
         if (mat == null) {
-            TweetyPlugin.getInstance().getLogger().log(Level.WARNING, String.format("Config value \"%s\" has an invalid material name: \"%s\"", key, val));
+            RosePlugin.getInstance().getLogger().log(Level.WARNING, String.format("Config value \"%s\" has an invalid material name: \"%s\"", key, val));
         }
 
         return mat != null ? mat : CompMaterial.STONE;
@@ -123,10 +123,10 @@ public class ConfigSetting {
     @NotNull
     public CompMaterial getMaterial(@NotNull CompMaterial def) {
         String val = config.getString(key);
-        CompMaterial mat = val != null ? CompMaterial.fromString(val) : null;
+        CompMaterial mat = val != null ? CompMaterial.matchCompMaterial(val).orElse(null) : null;
 
         if (mat == null) {
-            TweetyPlugin.getInstance().getLogger().log(Level.WARNING, String.format("Config value \"%s\" has an invalid material name: \"%s\"", key, val));
+            RosePlugin.getInstance().getLogger().log(Level.WARNING, String.format("Config value \"%s\" has an invalid material name: \"%s\"", key, val));
         }
 
         return mat != null ? mat : def;

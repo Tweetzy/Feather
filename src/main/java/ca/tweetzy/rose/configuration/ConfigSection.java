@@ -1,6 +1,6 @@
 package ca.tweetzy.rose.configuration;
 
-import ca.tweetzy.tweety.remain.comp.CompMaterial;
+import ca.tweetzy.rose.comp.enums.CompMaterial;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -717,16 +717,14 @@ public class ConfigSection extends MemoryConfiguration {
     public CompMaterial getMaterial(@NotNull String path) {
         String val = getString(path);
 
-        return val != null ? CompMaterial.fromString(val) : null;
+        return val != null ? CompMaterial.matchCompMaterial(val).orElse(null) : null;
     }
 
     @Nullable
     public CompMaterial getMaterial(@NotNull String path, @Nullable CompMaterial def) {
         String val = getString(path);
+        return CompMaterial.matchCompMaterial(val).orElse(def);
 
-        CompMaterial mat = val != null ? CompMaterial.fromString(val) : null;
-
-        return mat != null ? mat : def;
     }
 
     @Nullable

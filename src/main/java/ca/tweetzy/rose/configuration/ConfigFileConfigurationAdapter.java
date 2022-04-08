@@ -1,6 +1,6 @@
 package ca.tweetzy.rose.configuration;
 
-import ca.tweetzy.tweety.remain.comp.CompMaterial;
+import ca.tweetzy.rose.comp.enums.CompMaterial;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
