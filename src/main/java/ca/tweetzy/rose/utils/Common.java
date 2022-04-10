@@ -32,12 +32,17 @@ public final class Common {
         }
     }
 
+    public static void log(String... messages) {
+        tell(RosePlugin.getInstance().getConsole(), messages);
+    }
+
     public static void broadcast(String permission, String... messages) {
         if (permission == null)
             Bukkit.getOnlinePlayers().forEach(online -> tell(online, messages));
         else
             Bukkit.getOnlinePlayers().stream().filter(online -> online.hasPermission(permission)).forEach(filtered -> tell(filtered, messages));
     }
+
 
     public static String colorize(String string) {
         return ColorFormatter.process(string);
