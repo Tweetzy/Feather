@@ -304,7 +304,7 @@ public final class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     private void processRequirements(Command command, CommandSender sender, String[] args) {
-        if (!(sender instanceof ConsoleCommandSender) && command.getAllowedExecutor() == AllowedExecutor.CONSOLE) {
+        if (sender instanceof Player && command.getAllowedExecutor() == AllowedExecutor.CONSOLE) {
             Common.tell(sender, consoleOnlyMessage);
             return;
         }

@@ -28,7 +28,7 @@ public final class Common {
     public static void tell(CommandSender sender, String... messages) {
         final String prefix = PREFIX.length() == 0 ? "" : PREFIX + " ";
         for (String message : messages) {
-            sender.sendMessage(prefix + colorize(message));
+            sender.sendMessage(colorize(prefix + message));
         }
     }
 
