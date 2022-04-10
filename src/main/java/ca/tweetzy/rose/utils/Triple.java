@@ -9,8 +9,11 @@ import lombok.Data;
  * @author Kiran Hart
  */
 @Data
-public final class Tuple<K, V> {
+public final class Triple<L, M, R> {
 
-    private final K key;
-    private final V value;
+    private final L left;
+
+    private final M middle;
+
+    private final R right;
 }
