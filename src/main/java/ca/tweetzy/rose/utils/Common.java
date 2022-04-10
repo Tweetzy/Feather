@@ -26,7 +26,16 @@ public final class Common {
     public static String PREFIX = "[RoseCore]";
 
     public static void tell(CommandSender sender, String... messages) {
-        final String prefix = PREFIX.length() == 0 ? "" : PREFIX + " ";
+        tell(sender, true, messages);
+    }
+
+    public static void tellNoPrefix(CommandSender sender, String... messages) {
+        tell(sender, false, messages);
+    }
+
+    public static void tell(CommandSender sender, boolean addPrefix, String... messages) {
+        final String prefix = (PREFIX.length() == 0 || !addPrefix) ? "" : PREFIX + " ";
+
         for (String message : messages) {
             sender.sendMessage(colorize(prefix + message));
         }
@@ -36,13 +45,24 @@ public final class Common {
         tell(RosePlugin.getInstance().getConsole(), messages);
     }
 
-    public static void broadcast(String permission, String... messages) {
+    public static void broadcast(String permission, boolean prefix, String... messages) {
         if (permission == null)
-            Bukkit.getOnlinePlayers().forEach(online -> tell(online, messages));
+            Bukkit.getOnlinePlayers().forEach(online -> tell(online, prefix, messages));
         else
-            Bukkit.getOnlinePlayers().stream().filter(online -> online.hasPermission(permission)).forEach(filtered -> tell(filtered, messages));
+            Bukkit.getOnlinePlayers().stream().filter(online -> online.hasPermission(permission)).forEach(filtered -> tell(filtered, prefix, messages));
     }
 
+    public static void broadcast(String permission, String... messages) {
+        broadcast(permission, true, messages);
+    }
+
+    public static void broadcastNoPrefix(String permission, String... messages) {
+        broadcast(permission, false, messages);
+    }
+
+    public static void broadcastNoPrefix(String... messages) {
+        broadcast(null, false, messages);
+    }
 
     public static String colorize(String string) {
         return ColorFormatter.process(string);

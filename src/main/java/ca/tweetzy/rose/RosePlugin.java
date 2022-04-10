@@ -67,7 +67,6 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         console.sendMessage(Common.colorize(String.format("#00ce74Developer#CBCBCB: &e%s", String.join(", ", getDescription().getAuthors()))));
 
         try {
-            // TODO LOCALE
 
             onFlight();
 
@@ -156,6 +155,19 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
     Misc
     -------------------------------------------------------------------------
      */
+
+    public String getPluginName() {
+        return getDescription().getName();
+    }
+
+    public String getPluginDescription() {
+        return getDescription().getDescription();
+    }
+
+    public String getVersion() {
+        return getDescription().getVersion();
+    }
+
     protected int getBStatsId() {
         return -1;
     }
