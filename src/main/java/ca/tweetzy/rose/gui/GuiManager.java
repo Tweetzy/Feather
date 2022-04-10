@@ -183,12 +183,14 @@ public class GuiManager {
 
                     // process button press
                     if (gui.onClick(manager, player, openInv, event)) {
-                        player.playSound(player.getLocation(), gui.getDefaultSound().parseSound(), 1F, 1F);
+                        if (gui.getDefaultSound() != null)
+                            player.playSound(player.getLocation(), gui.getDefaultSound().parseSound(), 1F, 1F);
                     }
                 } else {
                     // Player clicked in the bottom inventory while GUI is open
                     if (gui.onClickPlayerInventory(manager, player, openInv, event)) {
-                        player.playSound(player.getLocation(), gui.getDefaultSound().parseSound(), 1F, 1F);
+                        if (gui.getDefaultSound() != null)
+                            player.playSound(player.getLocation(), gui.getDefaultSound().parseSound(), 1F, 1F);
                     } else if (!gui.acceptsItems || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         event.setCancelled(true);
                     }

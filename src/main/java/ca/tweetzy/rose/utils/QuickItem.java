@@ -4,9 +4,8 @@ import ca.tweetzy.rose.comp.NBTEditor;
 import ca.tweetzy.rose.comp.enums.CompMaterial;
 import ca.tweetzy.rose.comp.enums.ServerVersion;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -16,11 +15,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Date Created: April 07 2022
@@ -233,7 +228,9 @@ public final class QuickItem {
      */
     public ItemStack make() {
         ItemStack compiledItem = this.item != null ? this.item.clone() : this.material.parseItem();
-        Object compiledMeta = item.hasItemMeta() ? this.meta != null ? this.meta.clone() : compiledItem.getItemMeta() : null;
+        ItemMeta compiledMeta = compiledItem.getItemMeta();
+        if (compiledItem == null)
+            compiledMeta = Bukkit.getItemFactory().getItemMeta(compiledItem.getType());
 
         // Override with given material
         if (this.material != null) {
@@ -247,73 +244,35 @@ public final class QuickItem {
         if (CompMaterial.isAir(compiledItem.getType()))
             return compiledItem;
 
-        // Apply specific material color if possible
-        color:
-        if (this.color != null) {
-            if (compiledItem.getType().toString().contains("LEATHER")) {
-                ((LeatherArmorMeta) compiledMeta).setColor(this.color);
-            } else {
 
-                // Hack: If you put WHITE_WOOL and a color, we automatically will change the material to the colorized version
-                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-                    final String dye = DyeColor.getByColor(this.color).toString();
-                    final List<String> colorableMaterials = Arrays.asList("BANNER", "BED", "CARPET", "CONCRETE", "GLAZED_TERRACOTTA", "SHULKER_BOX", "STAINED_GLASS",
-                            "STAINED_GLASS_PANE", "TERRACOTTA", "WALL_BANNER", "WOOL");
-
-                    for (final String material : colorableMaterials) {
-                        final String suffix = "_" + material;
-
-                        if (compiledItem.getType().toString().endsWith(suffix)) {
-                            compiledItem.setType(Material.valueOf(dye + suffix));
-
-                            break color;
-                        }
-                    }
-                } else {
-                    try {
-                        final byte dataValue = DyeColor.getByColor(this.color).getWoolData();
-
-                        compiledItem.setData(new MaterialData(compiledItem.getType(), dataValue));
-                        compiledItem.setDurability(dataValue);
-
-                    } catch (final NoSuchMethodError err) {
-                        // Ancient MC, ignore
-                    }
-                }
-            }
+        if (this.glow && this.enchants.isEmpty()) {
+            compiledMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+            this.flags.add(ItemFlag.HIDE_ENCHANTS);
         }
 
-        if (compiledMeta != null) {
-            if (this.glow && this.enchants.isEmpty()) {
-                ((ItemMeta) compiledMeta).addEnchant(Enchantment.DURABILITY, 1, true);
+        for (final Map.Entry<Enchantment, Integer> entry : this.enchants.entrySet()) {
+            final Enchantment enchant = entry.getKey();
+            final int level = entry.getValue();
 
-                this.flags.add(ItemFlag.HIDE_ENCHANTS);
-            }
+            if (compiledMeta instanceof EnchantmentStorageMeta)
+                ((EnchantmentStorageMeta) compiledMeta).addStoredEnchant(enchant, level, true);
 
-            for (final Map.Entry<Enchantment, Integer> entry : this.enchants.entrySet()) {
-                final Enchantment enchant = entry.getKey();
-                final int level = entry.getValue();
+            else
+                compiledMeta.addEnchant(enchant, level, true);
+        }
 
-                if (compiledMeta instanceof EnchantmentStorageMeta)
-                    ((EnchantmentStorageMeta) compiledMeta).addStoredEnchant(enchant, level, true);
+        if (this.name != null && !"".equals(this.name))
+            compiledMeta.setDisplayName(Common.colorize(name));
 
-                else
-                    ((ItemMeta) compiledMeta).addEnchant(enchant, level, true);
-            }
+        if (!this.lores.isEmpty()) {
+            final List<String> coloredLores = new ArrayList<>();
 
-            if (this.name != null && !"".equals(this.name))
-                ((ItemMeta) compiledMeta).setDisplayName(Common.colorize("&r&f" + name));
+            for (final String lore : this.lores)
+                if (lore != null)
+                    for (final String subLore : lore.split("\n"))
+                        coloredLores.add(Common.colorize("&7" + subLore));
 
-            if (!this.lores.isEmpty()) {
-                final List<String> coloredLores = new ArrayList<>();
-
-                for (final String lore : this.lores)
-                    if (lore != null)
-                        for (final String subLore : lore.split("\n"))
-                            coloredLores.add(Common.colorize("&7" + subLore));
-
-                ((ItemMeta) compiledMeta).setLore(coloredLores);
-            }
+            compiledMeta.setLore(coloredLores);
         }
 
         if (this.unbreakable) {
@@ -329,7 +288,7 @@ public final class QuickItem {
 
         for (final ItemFlag flag : this.flags)
             try {
-                ((ItemMeta) compiledMeta).addItemFlags(ItemFlag.valueOf(flag.toString()));
+                compiledMeta.addItemFlags(flag);
             } catch (final Throwable t) {
             }
 
@@ -338,8 +297,8 @@ public final class QuickItem {
             compiledItem.setAmount(this.amount);
 
         // Apply Bukkit metadata
-        if (compiledMeta instanceof ItemMeta)
-            compiledItem.setItemMeta((ItemMeta) compiledMeta);
+        compiledItem.setItemMeta(compiledMeta);
+
 
         //
         // From now on we have to re-set the item
@@ -347,7 +306,7 @@ public final class QuickItem {
         // Set custom model data
         if (this.modelData != null && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14))
             try {
-                ((ItemMeta) compiledMeta).setCustomModelData(this.modelData);
+                compiledMeta.setCustomModelData(this.modelData);
             } catch (final Throwable t) {
             }
 

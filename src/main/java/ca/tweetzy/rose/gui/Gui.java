@@ -624,6 +624,16 @@ public class Gui {
                 this.clearActions(nextPageIndex);
             }
         }
+
+        if (page == 1) {
+            this.setItem(prevPageIndex, getDefaultItem());
+            this.clearActions(prevPageIndex);
+        }
+
+        if (page == pages) {
+            this.setItem(nextPageIndex, getDefaultItem());
+            this.clearActions(nextPageIndex);
+        }
     }
 
     @NotNull

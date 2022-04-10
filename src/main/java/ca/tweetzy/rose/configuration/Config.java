@@ -1,6 +1,7 @@
 package ca.tweetzy.rose.configuration;
 
 import ca.tweetzy.rose.comp.enums.ServerVersion;
+import ca.tweetzy.rose.utils.Common;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -107,6 +108,8 @@ public class Config extends ConfigSection {
 
 
     private void loaderOptionsInit() {
+        yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)) {
             LoaderOptions loaderOptions = new LoaderOptions();
             loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
@@ -662,6 +665,7 @@ public class Config extends ConfigSection {
             }
 
             String dump = yaml.dump(this.getValues(false));
+
             if (!dump.equals(BLANK_CONFIG)) {
                 writeComments(dump, str);
             }
@@ -673,7 +677,6 @@ public class Config extends ConfigSection {
 
             return str.toString();
         } catch (Throwable ex) {
-            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, "Error saving config", ex);
             delaySave();
         }
 
