@@ -6,16 +6,23 @@ import ca.tweetzy.rose.comp.enums.ServerVersion;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Date Created: April 07 2022
@@ -261,7 +268,7 @@ public final class QuickItem {
                 compiledMeta.addEnchant(enchant, level, true);
         }
 
-        if (this.name != null && !"".equals(this.name))
+        if (this.name != null && !"" .equals(this.name))
             compiledMeta.setDisplayName(Common.colorize(name));
 
         if (!this.lores.isEmpty()) {
@@ -371,5 +378,20 @@ public final class QuickItem {
      */
     public static QuickItem of(final CompMaterial mat) {
         return new QuickItem().material(mat);
+    }
+
+    public static QuickItem of(final OfflinePlayer player) {
+        final ItemStack itemStack = CompMaterial.PLAYER_HEAD.parseItem();
+        final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+
+        try {
+            meta.setOwningPlayer(player);
+        } catch (Throwable ignored) {
+            meta.setOwner(player.getName());
+        }
+
+        itemStack.setItemMeta(meta);
+
+        return of(itemStack);
     }
 }
