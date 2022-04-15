@@ -5,7 +5,7 @@ package ca.tweetzy.rose.utils;
  * Time Created: 1:48 p.m.
  *
  * @author Kiran Hart
- * https://www.spigotmc.org/threads/free-code-sending-perfectly-centered-chat-message.95872/
+ *         https://www.spigotmc.org/threads/free-code-sending-perfectly-centered-chat-message.95872/
  */
 public final class ChatUtil {
 

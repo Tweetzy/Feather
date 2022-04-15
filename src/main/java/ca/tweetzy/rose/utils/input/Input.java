@@ -1,8 +1,8 @@
 package ca.tweetzy.rose.utils.input;
 
-import ca.tweetzy.rose.utils.Common;
 import ca.tweetzy.rose.comp.ActionBar;
 import ca.tweetzy.rose.comp.Titles;
+import ca.tweetzy.rose.utils.Common;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -58,6 +58,7 @@ public final class MathUtil {
      * Evaluate the given expression
      *
      * @param expression math expression
+     *
      * @return the calculated result
      */
     public static double calculate(final String expression) {
@@ -87,7 +88,7 @@ public final class MathUtil {
             double parseExpression() {
                 double v = parseTerm();
 
-                for (;;) {
+                for (; ; ) {
                     eatSpace();
 
                     if (c == '+') { // addition
@@ -105,7 +106,7 @@ public final class MathUtil {
             double parseTerm() {
                 double v = parseFactor();
 
-                for (;;) {
+                for (; ; ) {
                     eatSpace();
 
                     if (c == '/') { // division

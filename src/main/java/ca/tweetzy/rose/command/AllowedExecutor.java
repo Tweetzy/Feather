@@ -8,5 +8,5 @@ package ca.tweetzy.rose.command;
  */
 public enum AllowedExecutor {
 
-	CONSOLE, PLAYER, BOTH
+    CONSOLE, PLAYER, BOTH
 }

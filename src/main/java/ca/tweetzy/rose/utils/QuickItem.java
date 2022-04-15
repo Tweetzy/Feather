@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -268,7 +267,7 @@ public final class QuickItem {
                 compiledMeta.addEnchant(enchant, level, true);
         }
 
-        if (this.name != null && !"" .equals(this.name))
+        if (this.name != null && !"".equals(this.name))
             compiledMeta.setDisplayName(Common.colorize(name));
 
         if (!this.lores.isEmpty()) {

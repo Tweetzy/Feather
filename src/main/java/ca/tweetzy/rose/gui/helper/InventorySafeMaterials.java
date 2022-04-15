@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 @UtilityClass
 public final class InventorySafeMaterials {
 
-	public List<CompMaterial> get() {
-		final List<CompMaterial> list = new ArrayList<>();
+    public List<CompMaterial> get() {
+        final List<CompMaterial> list = new ArrayList<>();
 
-		final Inventory drawer = Bukkit.createInventory(null, 9, "Valid Materials");
+        final Inventory drawer = Bukkit.createInventory(null, 9, "Valid Materials");
 
-		for (int i = 0; i < CompMaterial.values().length; i++) {
-			final CompMaterial material = CompMaterial.values()[i];
-			drawer.setItem(0, material.parseItem());
-			if (drawer.getItem(0) != null) {
-				drawer.setItem(0, null);
-				list.add(material);
-			}
-		}
+        for (int i = 0; i < CompMaterial.values().length; i++) {
+            final CompMaterial material = CompMaterial.values()[i];
+            drawer.setItem(0, material.parseItem());
+            if (drawer.getItem(0) != null) {
+                drawer.setItem(0, null);
+                list.add(material);
+            }
+        }
 
-		return list.stream().sorted(Comparator.comparing(CompMaterial::name)).collect(Collectors.toList());
-	}
+        return list.stream().sorted(Comparator.comparing(CompMaterial::name)).collect(Collectors.toList());
+    }
 }

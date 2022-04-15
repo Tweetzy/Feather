@@ -11,20 +11,20 @@ import java.util.stream.Stream;
  */
 public final class NestedCommand {
 
-	final Command parent;
-	final LinkedHashMap<String, Command> children = new LinkedHashMap<>();
+    final Command parent;
+    final LinkedHashMap<String, Command> children = new LinkedHashMap<>();
 
-	protected NestedCommand(Command parent) {
-		this.parent = parent;
-	}
+    protected NestedCommand(Command parent) {
+        this.parent = parent;
+    }
 
-	public NestedCommand addSubCommand(Command command) {
-		command.getSubCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command));
-		return this;
-	}
+    public NestedCommand addSubCommand(Command command) {
+        command.getSubCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command));
+        return this;
+    }
 
-	public NestedCommand addSubCommands(Command... commands) {
-		Stream.of(commands).forEach(command -> command.getSubCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command)));
-		return this;
-	}
+    public NestedCommand addSubCommands(Command... commands) {
+        Stream.of(commands).forEach(command -> command.getSubCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command)));
+        return this;
+    }
 }

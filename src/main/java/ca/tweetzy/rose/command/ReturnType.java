@@ -8,5 +8,5 @@ package ca.tweetzy.rose.command;
  */
 public enum ReturnType {
 
-	SUCCESS, FAIL, INVALID_SYNTAX, REQUIRES_PLAYER, REQUIRES_CONSOLE;
+    SUCCESS, FAIL, INVALID_SYNTAX, REQUIRES_PLAYER, REQUIRES_CONSOLE;
 }

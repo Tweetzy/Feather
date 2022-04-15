@@ -1,14 +1,14 @@
 package ca.tweetzy.rose;
 
-import ca.tweetzy.rose.configuration.Config;
 import ca.tweetzy.rose.database.DataManagerAbstract;
+import ca.tweetzy.rose.files.file.YamlFile;
 import ca.tweetzy.rose.utils.Common;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +22,7 @@ import java.util.logging.Level;
  */
 public abstract class RosePlugin extends JavaPlugin implements Listener {
 
-    protected Config config = new Config(this);
+    protected YamlFile config = new YamlFile(getDataFolder() + "/config.yml");
     protected ConsoleCommandSender console = Bukkit.getConsoleSender();
     private boolean emergencyStop = false;
 
@@ -107,19 +107,14 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
 
     @Override
     public final void reloadConfig() {
-        this.config.load();
+        try {
+            this.config.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         onStretch();
     }
 
-    @Override
-    public FileConfiguration getConfig() {
-        return this.config.getFileConfig();
-    }
-
-    @Override
-    public void saveConfig() {
-        this.config.save();
-    }
 
 	/*
 	-------------------------------------------------------------------------
@@ -184,7 +179,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         return this.console;
     }
 
-    public Config getCoreConfig() {
+    public YamlFile getCoreConfig() {
         return this.config;
     }
 
