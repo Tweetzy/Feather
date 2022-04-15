@@ -35,7 +35,7 @@ public final class RoseCore {
 
     private final static int coreRevision = 1;
 
-    private final static String coreVersion = "1.0.0";
+    private final static String coreVersion = "1.1.0";
 
     private final static Set<PluginInfo> registeredPlugins = new HashSet<>();
     private ArrayList<BukkitTask> tasks = new ArrayList<>();

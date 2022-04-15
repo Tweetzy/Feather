@@ -49,7 +49,7 @@ public class YamlFile extends YamlConfiguration implements Commentable {
      */
     private File configFile;
 
-    private List<ConfigSetting> settingList;
+    private final List<ConfigSetting> settingList;
 
     /**
      * Builds this {@link YamlFile} without any configuration file.
@@ -61,6 +61,7 @@ public class YamlFile extends YamlConfiguration implements Commentable {
      */
     public YamlFile() {
         super(new SimpleYamlImplementation());
+        this.settingList = new ArrayList<>();
     }
 
     /**
@@ -76,6 +77,7 @@ public class YamlFile extends YamlConfiguration implements Commentable {
      */
     public YamlFile(final YamlImplementation yamlImplementation) {
         super(yamlImplementation);
+        this.settingList = new ArrayList<>();
     }
 
     /**
@@ -90,7 +92,6 @@ public class YamlFile extends YamlConfiguration implements Commentable {
     public YamlFile(final String path) throws IllegalArgumentException {
         this();
         this.setConfigurationFile(path);
-        this.settingList = new ArrayList<>();
     }
 
     /**

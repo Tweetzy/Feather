@@ -48,6 +48,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
     public final void onLoad() {
         try {
             getInstance();
+            this.config.createOrLoadWithComments();
             onWake();
         } catch (final Throwable throwable) {
             criticalErrorOnPluginStartup(throwable);

@@ -14,16 +14,7 @@ import ca.tweetzy.rose.files.utils.StringUtils;
 import ca.tweetzy.rose.files.utils.SupplierIO;
 import ca.tweetzy.rose.files.utils.Validate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * An implementation of {@link Configuration} which saves the configuration in Yaml.
@@ -81,9 +72,7 @@ public class YamlConfiguration extends FileConfiguration {
     @Override
     public String saveToString() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-
         this.save(stringWriter);
-
         return StringUtils.stripCarriage(stringWriter.toString());
     }
 
@@ -101,6 +90,8 @@ public class YamlConfiguration extends FileConfiguration {
         try {
             writer.write(this.buildHeader());
             this.dump(writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             writer.close();
         }
