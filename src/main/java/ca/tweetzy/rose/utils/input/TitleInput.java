@@ -1,5 +1,6 @@
 package ca.tweetzy.rose.utils.input;
 
+import ca.tweetzy.rose.utils.Common;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +29,7 @@ public abstract class TitleInput extends Input {
     }
 
     public TitleInput(@NonNull final Player player, final String title, final String subTitle) {
-        this(player, title, subTitle, "");
+        this(player, Common.colorize(title), Common.colorize(subTitle), Common.colorize(""));
     }
 
     public abstract boolean onResult(String string);
