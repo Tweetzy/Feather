@@ -7,7 +7,17 @@ import ca.tweetzy.rose.files.configuration.comments.format.CommentFormatter;
 import ca.tweetzy.rose.files.exceptions.InvalidConfigurationException;
 import ca.tweetzy.rose.files.utils.Validate;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
  * This is a base class for all File based implementations of {@link Configuration}
@@ -85,7 +95,7 @@ public abstract class FileConfiguration extends MemoryConfiguration implements L
     @Override
     public void save(final Writer writer) throws IOException {
         Validate.notNull(writer, "Writer cannot be null");
-        try (writer) { //todo fix if it broke
+        try { //todo fix if it broke
             writer.write(this.saveToString());
         } catch (IOException exception) {
             exception.printStackTrace();
