@@ -95,7 +95,7 @@ public abstract class FileConfiguration extends MemoryConfiguration implements L
     @Override
     public void save(final Writer writer) throws IOException {
         Validate.notNull(writer, "Writer cannot be null");
-        try { //todo fix if it broke
+        try (writer) {
             writer.write(this.saveToString());
         } catch (IOException exception) {
             exception.printStackTrace();

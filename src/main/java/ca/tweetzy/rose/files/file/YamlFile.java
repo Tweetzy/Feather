@@ -1053,7 +1053,8 @@ public class YamlFile extends YamlConfiguration implements Commentable {
 
     public void applySettings() {
         this.settingList.forEach(setting -> {
-            this.addDefault(setting.getKey(), setting.getDefaultValue());
+            if (!this.isSet(setting.getKey()))
+                this.set(setting.getKey(), setting.getDefaultValue());
             if (setting.getComments().length > 0)
                 this.setComment(setting.getKey(), String.join("\n", setting.getComments()));
         });

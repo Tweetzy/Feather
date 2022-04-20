@@ -50,7 +50,6 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         try {
             getInstance();
             this.config.createOrLoadWithComments();
-            this.config.addSetting(new ConfigSetting(this.config, "language", "english", "The default language for the plugin"));
             onWake();
         } catch (final Throwable throwable) {
             criticalErrorOnPluginStartup(throwable);
