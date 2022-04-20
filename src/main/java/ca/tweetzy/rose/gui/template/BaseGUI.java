@@ -19,47 +19,55 @@ import java.util.stream.IntStream;
  */
 public abstract class BaseGUI extends Gui {
 
-	private final Gui parent;
+    private final Gui parent;
 
-	public BaseGUI(final Gui parent, @NonNull final String title, final int rows) {
-		this.parent = parent;
-		setTitle(Common.colorize(title));
-		setRows(rows);
-		setDefaultSound(null);
-		setDefaultItem(QuickItem.of(CompMaterial.BLACK_STAINED_GLASS_PANE).name(" ").make());
-	}
+    public BaseGUI(final Gui parent, @NonNull final String title, final int rows) {
+        this.parent = parent;
+        setTitle(Common.colorize(title));
+        setRows(rows);
+        setDefaultSound(null);
+        setDefaultItem(QuickItem.of(CompMaterial.BLACK_STAINED_GLASS_PANE).name(" ").make());
+    }
 
-	public BaseGUI(final Gui parent, @NonNull final String title) {
-		this(parent, title, 6);
-	}
+    public BaseGUI(final Gui parent, @NonNull final String title) {
+        this(parent, title, 6);
+    }
 
-	public BaseGUI(@NonNull final String title) {
-		this(null, title, 6);
-	}
+    public BaseGUI(@NonNull final String title) {
+        this(null, title, 6);
+    }
 
-	protected abstract void draw();
+    protected abstract void draw();
 
 
-	protected void applyBackExit(Gui override) {
-		setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, override));
-	}
+    protected void applyBackExit(Gui override) {
+        setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, override));
+    }
 
-	protected void applyBackExit() {
-		if (this.parent == null)
-			setButton(this.rows - 1, 0, getExitButton(), click -> click.gui.exit());
-		else
-			setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, this.parent));
-	}
+    protected void applyBackExit() {
+        if (this.parent == null)
+            setButton(this.rows - 1, 0, getExitButton(), click -> click.gui.exit());
+        else
+            setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, this.parent));
+    }
 
-	protected List<Integer> fillSlots() {
-		return IntStream.rangeClosed(0, 44).boxed().collect(Collectors.toList());
-	}
+    protected List<Integer> fillSlots() {
+        return IntStream.rangeClosed(0, 44).boxed().collect(Collectors.toList());
+    }
 
-	protected ItemStack getBackButton() {
-	    return QuickItem.of(CompMaterial.DARK_OAK_DOOR).name("&aBack").lore("&7Click to go back").make();
+    protected ItemStack getBackButton() {
+        return QuickItem.of(CompMaterial.DARK_OAK_DOOR).name("&aBack").lore("&7Click to go back").make();
     }
 
     protected ItemStack getExitButton() {
-	    return QuickItem.of(CompMaterial.BARRIER).name("&cExit").lore("&7Click to close menu").make();
+        return QuickItem.of(CompMaterial.BARRIER).name("&cExit").lore("&7Click to close menu").make();
+    }
+
+    protected ItemStack getPreviousPageButton() {
+        return QuickItem.of(CompMaterial.ARROW, "&ePrevious").make();
+    }
+
+    protected ItemStack getNextPageButton() {
+        return QuickItem.of(CompMaterial.ARROW, "&eNext").make();
     }
 }
