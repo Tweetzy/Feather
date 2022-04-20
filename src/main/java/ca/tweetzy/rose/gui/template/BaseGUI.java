@@ -5,6 +5,7 @@ import ca.tweetzy.rose.gui.Gui;
 import ca.tweetzy.rose.utils.Common;
 import ca.tweetzy.rose.utils.QuickItem;
 import lombok.NonNull;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,17 +41,25 @@ public abstract class BaseGUI extends Gui {
 
 
 	protected void applyBackExit(Gui override) {
-		setButton(this.rows - 1, 0, QuickItem.of(CompMaterial.DARK_OAK_DOOR).name("&aBack").lore("&7Click to go back").make(), click -> click.manager.showGUI(click.player, override));
+		setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, override));
 	}
 
 	protected void applyBackExit() {
 		if (this.parent == null)
-			setButton(this.rows - 1, 0, QuickItem.of(CompMaterial.BARRIER).name("&cExit").lore("&7Click to close menu").make(), click -> click.gui.exit());
+			setButton(this.rows - 1, 0, getExitButton(), click -> click.gui.exit());
 		else
-			setButton(this.rows - 1, 0, QuickItem.of(CompMaterial.DARK_OAK_DOOR).name("&aBack").lore("&7Click to go back").make(), click -> click.manager.showGUI(click.player, this.parent));
+			setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, this.parent));
 	}
 
 	protected List<Integer> fillSlots() {
 		return IntStream.rangeClosed(0, 44).boxed().collect(Collectors.toList());
 	}
+
+	protected ItemStack getBackButton() {
+	    return QuickItem.of(CompMaterial.DARK_OAK_DOOR).name("&aBack").lore("&7Click to go back").make();
+    }
+
+    protected ItemStack getExitButton() {
+	    return QuickItem.of(CompMaterial.BARRIER).name("&cExit").lore("&7Click to close menu").make();
+    }
 }
