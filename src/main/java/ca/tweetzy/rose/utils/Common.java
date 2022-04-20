@@ -3,6 +3,7 @@ package ca.tweetzy.rose.utils;
 import ca.tweetzy.rose.RosePlugin;
 import ca.tweetzy.rose.utils.colors.ColorFormatter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +77,13 @@ public final class Common {
     public static void setPrefix(String prefix) {
         PREFIX = prefix;
     }
+
+    public static boolean match(String pattern, String sentence) {
+        Pattern patt = Pattern.compile(ChatColor.stripColor(pattern), Pattern.CASE_INSENSITIVE);
+        java.util.regex.Matcher matcher = patt.matcher(sentence);
+        return matcher.find();
+    }
+
 
     // ------------------------------------------------------------------------------------------------------------
     // Scheduling from https://github.com/kangarko/Foundation
