@@ -1,6 +1,7 @@
 package ca.tweetzy.rose;
 
 import ca.tweetzy.rose.database.DataManagerAbstract;
+import ca.tweetzy.rose.files.ConfigSetting;
 import ca.tweetzy.rose.files.file.YamlFile;
 import ca.tweetzy.rose.utils.Common;
 import org.bukkit.Bukkit;
@@ -49,6 +50,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         try {
             getInstance();
             this.config.createOrLoadWithComments();
+            this.config.addSetting(new ConfigSetting(this.config, "language", "english", "The default language for the plugin"));
             onWake();
         } catch (final Throwable throwable) {
             criticalErrorOnPluginStartup(throwable);
@@ -68,7 +70,6 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
         console.sendMessage(Common.colorize(String.format("#00ce74Developer#CBCBCB: &e%s", String.join(", ", getDescription().getAuthors()))));
 
         try {
-
             onFlight();
 
             if (emergencyStop) {
@@ -222,7 +223,7 @@ public abstract class RosePlugin extends JavaPlugin implements Listener {
             if (unfinishedTasks > 0) {
                 getLogger().log(Level.WARNING,
                         String.format("A DataManager has been forcefully terminated with %d unfinished tasks - " +
-                                "This can be a serious problem, please report it to us (Songoda)!", unfinishedTasks));
+                                "This can be a serious problem, please report it to us (Tweetzy)!", unfinishedTasks));
             }
         }
     }
