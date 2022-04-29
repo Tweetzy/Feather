@@ -1,19 +1,15 @@
 package ca.tweetzy.rose.gui;
 
+import ca.tweetzy.rose.RosePlugin;
 import ca.tweetzy.rose.comp.enums.CompMaterial;
 import ca.tweetzy.rose.comp.enums.CompSound;
 import ca.tweetzy.rose.comp.enums.ServerVersion;
-import ca.tweetzy.rose.gui.events.GuiClickEvent;
-import ca.tweetzy.rose.gui.events.GuiCloseEvent;
-import ca.tweetzy.rose.gui.events.GuiDropItemEvent;
-import ca.tweetzy.rose.gui.events.GuiOpenEvent;
-import ca.tweetzy.rose.gui.events.GuiPageEvent;
-import ca.tweetzy.rose.gui.methods.Clickable;
-import ca.tweetzy.rose.gui.methods.Closable;
-import ca.tweetzy.rose.gui.methods.Droppable;
-import ca.tweetzy.rose.gui.methods.Openable;
-import ca.tweetzy.rose.gui.methods.Pagable;
+import ca.tweetzy.rose.gui.events.*;
+import ca.tweetzy.rose.gui.methods.*;
+import ca.tweetzy.rose.utils.Common;
+import ca.tweetzy.rose.utils.InventoryUpdate;
 import ca.tweetzy.rose.utils.QuickItem;
+import ca.tweetzy.rose.utils.Replacer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -259,16 +255,9 @@ public class Gui {
             if (inventory != null) {
                 // update active inventory
                 List<Player> toUpdate = getPlayers();
-                boolean isAllowClose = allowClose;
-                exit();
 
-                Inventory oldInv = inventory;
-                createInventory();
-                inventory.setContents(oldInv.getContents());
-
-                toUpdate.forEach(player -> player.openInventory(inventory));
-
-                allowClose = isAllowClose;
+                String finalTitle = title;
+                toUpdate.forEach(viewer -> InventoryUpdate.updateInventory(RosePlugin.getInstance(), viewer, Common.colorize(finalTitle)));
             }
         }
 
@@ -662,12 +651,10 @@ public class Gui {
         switch (t) {
             case DISPENSER:
             case HOPPER:
-                inventory = new GuiHolder(guiManager, this).newInventory(t,
-                        title == null ? "" : trimTitle(title));
+                inventory = new GuiHolder(guiManager, this).newInventory(t, Common.colorize(title == null ? "" : trimTitle(title)));
                 break;
             default:
-                inventory = new GuiHolder(guiManager, this).newInventory(rows * 9,
-                        title == null ? "" : trimTitle(title));
+                inventory = new GuiHolder(guiManager, this).newInventory(rows * 9, Common.colorize(title == null ? "" : trimTitle(title)));
                 break;
         }
     }
