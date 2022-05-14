@@ -74,10 +74,13 @@ public final class Common {
         return strings.stream().map(Common::colorize).collect(Collectors.toList());
     }
 
-    public static void setPrefix(String prefix) {
-        PREFIX = prefix;
-    }
-
+    /**
+     * It takes a pattern and a sentence, and returns true if the pattern matches the sentence
+     *
+     * @param pattern The pattern to match against.
+     * @param sentence The sentence you want to check.
+     * @return A boolean value.
+     */
     public static boolean match(String pattern, String sentence) {
         Pattern patt = Pattern.compile(ChatColor.stripColor(pattern), Pattern.CASE_INSENSITIVE);
         java.util.regex.Matcher matcher = patt.matcher(sentence);

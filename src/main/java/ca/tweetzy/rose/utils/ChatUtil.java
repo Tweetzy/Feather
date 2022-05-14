@@ -1,5 +1,8 @@
 package ca.tweetzy.rose.utils;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+
 /**
  * Date Created: April 10 2022
  * Time Created: 1:48 p.m.
@@ -11,6 +14,72 @@ public final class ChatUtil {
 
     private final static int CENTER_PX = 154;
 
+    /**
+     * It takes an enum and returns a string with the first letter of each word capitalized
+     *
+     * @param enumeration The enumeration to capitalize.
+     * @return The name of the enumeration in all caps.
+     */
+    public static String capitalizeFully(final Enum<?> enumeration) {
+        return capitalizeFully(enumeration.name());
+    }
+
+    /**
+     * It takes a string, formats it, and then capitalizes it
+     *
+     * @param string The string to capitalize, may be null
+     * @return The string with the first letter of each word capitalized.
+     */
+    public static String capitalizeFully(final String string) {
+        return WordUtils.capitalizeFully(format(string));
+    }
+
+    /**
+     * Capitalize the first letter of the given string.
+     *
+     * @param enumeration The enumeration to capitalize.
+     * @return The name of the enumeration.
+     */
+    public static String capitalize(final Enum<?> enumeration) {
+        return capitalize(enumeration.name());
+    }
+
+    /**
+     * It takes a string, formats it, and then capitalizes the first letter
+     *
+     * @param string The string to capitalize.
+     * @return The first letter of the string is capitalized.
+     */
+    public static String capitalize(final String string) {
+        return StringUtils.capitalize(format(string));
+    }
+
+    /**
+     * It takes a string and returns a string with the first letter capitalized and the rest of the letters lowercase
+     *
+     * @param enumeration The enumeration to format.
+     * @return The name of the enumeration.
+     */
+    public static String format(final Enum<?> enumeration) {
+        return format(enumeration.name());
+    }
+
+    /**
+     * It takes a string, makes it lowercase, replaces underscores with spaces, and trims the string
+     *
+     * @param string The string to format.
+     * @return The string is being returned in lower case and the underscores are being replaced with spaces.
+     */
+    public static String format(final String string) {
+        return string.toLowerCase().replace("_", " ").trim();
+    }
+
+    /**
+     * It takes a string, and adds spaces to the beginning of each line until the string is centered
+     *
+     * @param message The message you want to center.
+     * @return A string with the message centered.
+     */
     public static String centerMessage(String message) {
         String[] lines = Common.colorize(message).split("\n", 40);
         StringBuilder returnMessage = new StringBuilder();

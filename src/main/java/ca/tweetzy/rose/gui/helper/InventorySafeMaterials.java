@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public final class InventorySafeMaterials {
 
+    /**
+     * It creates a temporary inventory, sets the item in the first slot to the material, and if the item is not null, it adds it to the list
+     *
+     * @return A list of all valid materials in the game.
+     */
     public List<CompMaterial> get() {
         final List<CompMaterial> list = new ArrayList<>();
 

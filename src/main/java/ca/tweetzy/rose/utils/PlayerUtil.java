@@ -18,10 +18,23 @@ import java.util.Set;
  */
 public final class PlayerUtil {
 
+    /**
+     * Returns the item in the player's hand, or null if the player is not holding an item.
+     *
+     * @param player The player to get the hand of.
+     * @return The item in the player's hand.
+     */
     public static ItemStack getHand(@NonNull final Player player) {
         return getHand(player, Hand.MAIN);
     }
 
+    /**
+     * Returns the item in the player's hand, or null if the player is not holding anything.
+     *
+     * @param player The player to get the item from.
+     * @param hand The hand to get the item from.
+     * @return The item in the player's hand.
+     */
     public static ItemStack getHand(@NonNull final Player player, Hand hand) {
         if (ServerVersion.isServerVersionBelow(ServerVersion.V1_9)) {
             return player.getInventory().getItemInHand();
@@ -30,6 +43,14 @@ public final class PlayerUtil {
         return hand == Hand.MAIN ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
     }
 
+    /**
+     * It gets the highest number from a permission node
+     *
+     * @param player The player to check the permission for.
+     * @param permission The permission to check.
+     * @param def The default value to return if no permission is found.
+     * @return The highest number in the permission.
+     */
     public static int getNumberPermission(@NonNull final Player player, @NonNull final String permission, final int def) {
         final Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
 
@@ -65,6 +86,12 @@ public final class PlayerUtil {
         return set ? highest : def;
     }
 
+    /**
+     * If the player's inventory is empty, return true, otherwise return false.
+     *
+     * @param player The player to check the inventory of.
+     * @return A boolean value.
+     */
     public static boolean isInventoryEmpty(@NonNull final Player player) {
         final ItemStack[] everything = (ItemStack[]) ArrayUtils.addAll(player.getInventory().getContents(), player.getInventory().getArmorContents());
 

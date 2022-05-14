@@ -37,13 +37,24 @@ public abstract class BaseGUI extends Gui {
         this(null, title, 6);
     }
 
+    /**
+     * Draw the gui.
+     */
     protected abstract void draw();
 
 
+    /**
+     * It adds a back button to the bottom left of the GUI
+     *
+     * @param override The GUI to show when the back button is clicked.
+     */
     protected void applyBackExit(Gui override) {
         setButton(this.rows - 1, 0, getBackButton(), click -> click.manager.showGUI(click.player, override));
     }
 
+    /**
+     * If the GUI has a parent, then the back button will be set to the back button, otherwise it will be set to the exit button
+     */
     protected void applyBackExit() {
         if (this.parent == null)
             setButton(this.rows - 1, 0, getExitButton(), click -> click.gui.exit());
