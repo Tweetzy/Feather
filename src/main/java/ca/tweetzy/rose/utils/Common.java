@@ -28,7 +28,7 @@ public final class Common {
     public static String PREFIX = "[RoseCore]";
 
     public static void setPrefix(String prefix) {
-        Common.PREFIX = PREFIX;
+        PREFIX = prefix;
     }
 
     public static void tell(CommandSender sender, String... messages) {
