@@ -5,7 +5,7 @@
 
     <groupId>ca.tweetzy</groupId>
     <artifactId>rose</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
@@ -104,6 +104,7 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.30</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
@@ -149,6 +150,7 @@
                         <includes>
                             <include>ca.tweetzy:*</include>
                             <include>com.zaxxer:HikariCP</include>
+                            <include>org.yaml:snakeyaml</include>
                         </includes>
                     </artifactSet>
                     <filters>
@@ -157,6 +159,7 @@
                             <includes>
                                 <include>ca/</include>
                                 <include>com/zaxxer</include>
+                                <include>org/yaml/</include>
                                 <include>META-INF/maven/ca.tweetzy/RoseCore/</include>
                             </includes>
                             <excludes>
@@ -172,6 +175,10 @@
                         <relocation>
                             <pattern>net.kyori</pattern>
                             <shadedPattern>${project.groupId}.${project.artifactId}.third_party.kyori</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.yaml</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.third_party</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
