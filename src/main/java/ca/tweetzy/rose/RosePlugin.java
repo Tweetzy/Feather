@@ -1,7 +1,6 @@
 package ca.tweetzy.rose;
 
 import ca.tweetzy.rose.database.DataManagerAbstract;
-import ca.tweetzy.rose.files.ConfigSetting;
 import ca.tweetzy.rose.files.file.YamlFile;
 import ca.tweetzy.rose.utils.Common;
 import org.bukkit.Bukkit;
