@@ -29,10 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
@@ -40,14 +37,7 @@ import org.bukkit.potion.Potion;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,13 +63,14 @@ import java.util.regex.PatternSyntaxException;
  * <b>/give @p minecraft:dirt 1 10</b> where 1 is the item amount, and 10 is the data value. The material {@link #DIRT} with a data value of {@code 10} doesn't exist.
  *
  * @author Crypto Morin
- * @version 10.1.1.1
+ * @version 11.0.0
  * @see Material
  * @see ItemStack
  */
 public enum CompMaterial {
     ACACIA_BOAT("BOAT_ACACIA"),
     ACACIA_BUTTON("WOOD_BUTTON"),
+    ACACIA_CHEST_BOAT,
     ACACIA_DOOR("ACACIA_DOOR", "ACACIA_DOOR_ITEM"),
     ACACIA_FENCE,
     ACACIA_FENCE_GATE,
@@ -103,6 +94,7 @@ public enum CompMaterial {
      * @see #CAVE_AIR
      */
     AIR,
+    ALLAY_SPAWN_EGG,
     ALLIUM(2, "RED_ROSE"),
     AMETHYST_BLOCK,
     AMETHYST_CLUSTER,
@@ -148,6 +140,7 @@ public enum CompMaterial {
     BIG_DRIPLEAF_STEM,
     BIRCH_BOAT("BOAT_BIRCH"),
     BIRCH_BUTTON("WOOD_BUTTON"),
+    BIRCH_CHEST_BOAT,
     BIRCH_DOOR("BIRCH_DOOR", "BIRCH_DOOR_ITEM"),
     BIRCH_FENCE,
     BIRCH_FENCE_GATE,
@@ -393,6 +386,7 @@ public enum CompMaterial {
     DANDELION("YELLOW_FLOWER"),
     DARK_OAK_BOAT("BOAT_DARK_OAK"),
     DARK_OAK_BUTTON("WOOD_BUTTON"),
+    DARK_OAK_CHEST_BOAT,
     DARK_OAK_DOOR("DARK_OAK_DOOR", "DARK_OAK_DOOR_ITEM"),
     DARK_OAK_FENCE,
     DARK_OAK_FENCE_GATE,
@@ -473,6 +467,7 @@ public enum CompMaterial {
      * Changed in 1.17
      */
     DIRT_PATH("GRASS_PATH"),
+    DISC_FRAGMENT_5,
     DISPENSER,
     DOLPHIN_SPAWN_EGG,
     DONKEY_SPAWN_EGG(32, "MONSTER_EGG"),
@@ -485,6 +480,7 @@ public enum CompMaterial {
     DRIPSTONE_BLOCK,
     DROPPER,
     DROWNED_SPAWN_EGG,
+    ECHO_SHARD,
     EGG,
     ELDER_GUARDIAN_SPAWN_EGG(4, "MONSTER_EGG"),
     ELYTRA,
@@ -543,6 +539,8 @@ public enum CompMaterial {
     FLOWER_BANNER_PATTERN,
     FLOWER_POT("FLOWER_POT", "FLOWER_POT_ITEM"),
     FOX_SPAWN_EGG,
+    FROGSPAWN,
+    FROG_SPAWN_EGG,
     /**
      * This special material cannot be obtained as an item.
      */
@@ -564,6 +562,7 @@ public enum CompMaterial {
     GLOW_ITEM_FRAME,
     GLOW_LICHEN,
     GLOW_SQUID_SPAWN_EGG,
+    GOAT_HORN,
     GOAT_SPAWN_EGG,
     GOLDEN_APPLE,
     GOLDEN_AXE("GOLD_AXE"),
@@ -679,6 +678,7 @@ public enum CompMaterial {
     JUKEBOX,
     JUNGLE_BOAT("BOAT_JUNGLE"),
     JUNGLE_BUTTON("WOOD_BUTTON"),
+    JUNGLE_CHEST_BOAT,
     JUNGLE_DOOR("JUNGLE_DOOR", "JUNGLE_DOOR_ITEM"),
     JUNGLE_FENCE,
     JUNGLE_FENCE_GATE,
@@ -792,6 +792,24 @@ public enum CompMaterial {
     MAGMA_BLOCK("MAGMA"),
     MAGMA_CREAM,
     MAGMA_CUBE_SPAWN_EGG(62, "MONSTER_EGG"),
+    MANGROVE_BOAT,
+    MANGROVE_BUTTON,
+    MANGROVE_CHEST_BOAT,
+    MANGROVE_DOOR,
+    MANGROVE_FENCE,
+    MANGROVE_FENCE_GATE,
+    MANGROVE_LEAVES,
+    MANGROVE_LOG,
+    MANGROVE_PLANKS,
+    MANGROVE_PRESSURE_PLATE,
+    MANGROVE_PROPAGULE,
+    MANGROVE_ROOTS,
+    MANGROVE_SIGN,
+    MANGROVE_SLAB,
+    MANGROVE_STAIRS,
+    MANGROVE_TRAPDOOR,
+    MANGROVE_WALL_SIGN,
+    MANGROVE_WOOD,
     /**
      * Adding this to the duplicated list will give you a filled map
      * for 1.13+ versions and removing it from duplicated list will
@@ -820,11 +838,18 @@ public enum CompMaterial {
     MOSS_BLOCK,
     MOSS_CARPET,
     MOVING_PISTON("PISTON_MOVING_PIECE"),
+    MUD,
+    MUDDY_MANGROVE_ROOTS,
+    MUD_BRICKS,
+    MUD_BRICK_SLAB,
+    MUD_BRICK_STAIRS,
+    MUD_BRICK_WALL,
     MULE_SPAWN_EGG(32, "MONSTER_EGG"),
     MUSHROOM_STEM("BROWN_MUSHROOM"),
     MUSHROOM_STEW("MUSHROOM_SOUP"),
     MUSIC_DISC_11("GOLD_RECORD"),
     MUSIC_DISC_13("GREEN_RECORD"),
+    MUSIC_DISC_5,
     MUSIC_DISC_BLOCKS("RECORD_3"),
     MUSIC_DISC_CAT("RECORD_4"),
     MUSIC_DISC_CHIRP("RECORD_5"),
@@ -875,6 +900,7 @@ public enum CompMaterial {
     NOTE_BLOCK,
     OAK_BOAT("BOAT"),
     OAK_BUTTON("WOOD_BUTTON"),
+    OAK_CHEST_BOAT,
     OAK_DOOR("WOODEN_DOOR", "WOOD_DOOR"),
     OAK_FENCE("FENCE"),
     OAK_FENCE_GATE("FENCE_GATE"),
@@ -892,6 +918,7 @@ public enum CompMaterial {
     OBSERVER,
     OBSIDIAN,
     OCELOT_SPAWN_EGG(98, "MONSTER_EGG"),
+    OCHRE_FROGLIGHT,
     ORANGE_BANNER(14, "STANDING_BANNER", "BANNER"),
     ORANGE_BED(supports(12) ? 1 : 0, "BED_BLOCK", "BED"),
     ORANGE_CANDLE,
@@ -914,10 +941,12 @@ public enum CompMaterial {
     OXIDIZED_CUT_COPPER_SLAB,
     OXIDIZED_CUT_COPPER_STAIRS,
     PACKED_ICE,
+    PACKED_MUD,
     PAINTING,
     PANDA_SPAWN_EGG,
     PAPER,
     PARROT_SPAWN_EGG(105, "MONSTER_EGG"),
+    PEARLESCENT_FROGLIGHT,
     PEONY(5, "DOUBLE_PLANT"),
     PETRIFIED_OAK_SLAB("WOOD_STEP"),
     PHANTOM_MEMBRANE,
@@ -1000,6 +1029,7 @@ public enum CompMaterial {
     POTTED_FLOWERING_AZALEA_BUSH,
     POTTED_JUNGLE_SAPLING(3, "FLOWER_POT"),
     POTTED_LILY_OF_THE_VALLEY,
+    POTTED_MANGROVE_PROPAGULE,
     POTTED_OAK_SAPLING("FLOWER_POT"),
     POTTED_ORANGE_TULIP(5, "RED_ROSE", "FLOWER_POT"),
     POTTED_OXEYE_DAISY(8, "RED_ROSE", "FLOWER_POT"),
@@ -1070,6 +1100,7 @@ public enum CompMaterial {
     RAW_GOLD_BLOCK,
     RAW_IRON,
     RAW_IRON_BLOCK,
+    RECOVERY_COMPASS,
     REDSTONE,
     REDSTONE_BLOCK,
     /**
@@ -1118,6 +1149,7 @@ public enum CompMaterial {
     RED_TULIP(4, "RED_ROSE"),
     RED_WALL_BANNER(1, "WALL_BANNER"),
     RED_WOOL(14, "WOOL"),
+    REINFORCED_DEEPSLATE,
     REPEATER("DIODE_BLOCK_ON", "DIODE_BLOCK_OFF", "DIODE"),
     REPEATING_COMMAND_BLOCK("COMMAND", "COMMAND_REPEATING"),
     RESPAWN_ANCHOR,
@@ -1134,6 +1166,11 @@ public enum CompMaterial {
     SANDSTONE_STAIRS,
     SANDSTONE_WALL,
     SCAFFOLDING,
+    SCULK,
+    SCULK_CATALYST,
+    SCULK_SENSOR,
+    SCULK_SHRIEKER,
+    SCULK_VEIN,
     SCUTE,
     SEAGRASS,
     SEA_LANTERN,
@@ -1189,6 +1226,7 @@ public enum CompMaterial {
     SPORE_BLOSSOM,
     SPRUCE_BOAT("BOAT_SPRUCE"),
     SPRUCE_BUTTON("WOOD_BUTTON"),
+    SPRUCE_CHEST_BOAT,
     SPRUCE_DOOR("SPRUCE_DOOR", "SPRUCE_DOOR_ITEM"),
     SPRUCE_FENCE,
     SPRUCE_FENCE_GATE,
@@ -1235,6 +1273,8 @@ public enum CompMaterial {
     STRIPPED_DARK_OAK_WOOD("LOG"),
     STRIPPED_JUNGLE_LOG(3, "LOG"),
     STRIPPED_JUNGLE_WOOD(3, "LOG"),
+    STRIPPED_MANGROVE_LOG,
+    STRIPPED_MANGROVE_WOOD,
     STRIPPED_OAK_LOG("LOG"),
     STRIPPED_OAK_WOOD("LOG"),
     STRIPPED_SPRUCE_LOG(1, "LOG"),
@@ -1256,6 +1296,8 @@ public enum CompMaterial {
     SUSPICIOUS_STEW,
     SWEET_BERRIES,
     SWEET_BERRY_BUSH,
+    TADPOLE_BUCKET,
+    TADPOLE_SPAWN_EGG,
     TALL_GRASS(2, "DOUBLE_PLANT"),
     TALL_SEAGRASS,
     TARGET,
@@ -1284,6 +1326,7 @@ public enum CompMaterial {
     TURTLE_SPAWN_EGG,
     TWISTING_VINES,
     TWISTING_VINES_PLANT,
+    VERDANT_FROGLIGHT,
     VEX_SPAWN_EGG(35, "MONSTER_EGG"),
     VILLAGER_SPAWN_EGG(120, "MONSTER_EGG"),
     VINDICATOR_SPAWN_EGG(36, "MONSTER_EGG"),
@@ -1296,6 +1339,7 @@ public enum CompMaterial {
     VOID_AIR("AIR"),
     WALL_TORCH("TORCH"),
     WANDERING_TRADER_SPAWN_EGG,
+    WARDEN_SPAWN_EGG,
     WARPED_BUTTON,
     WARPED_DOOR,
     WARPED_FENCE,
@@ -1401,62 +1445,7 @@ public enum CompMaterial {
     ZOMBIE_SPAWN_EGG(54, "MONSTER_EGG"),
     ZOMBIE_VILLAGER_SPAWN_EGG(27, "MONSTER_EGG"),
     ZOMBIE_WALL_HEAD(2, "SKULL", "SKULL_ITEM"),
-    ZOMBIFIED_PIGLIN_SPAWN_EGG(57, "MONSTER_EGG", "ZOMBIE_PIGMAN_SPAWN_EGG"),
-
-    /*
-	1.19 new materials
-	 */
-    OCHRE_FROGLIGHT,
-    VERDANT_FROGLIGHT,
-    PEARLESCENT_FROGLIGHT,
-    FROGSPAWN,
-    ECHO_SHARD,
-    MANGROVE_BOAT,
-    MANGROVE_BUTTON,
-    MANGROVE_DOOR,
-    MANGROVE_FENCE,
-    MANGROVE_FENCE_GATE,
-    MANGROVE_LEAVES,
-    MANGROVE_LOG,
-    MANGROVE_PLANKS,
-    MANGROVE_PRESSURE_PLATE,
-    MANGROVE_PROPAGULE,
-    MANGROVE_ROOTS,
-    MANGROVE_SIGN,
-    MANGROVE_SLAB,
-    MANGROVE_STAIRS,
-    MANGROVE_TRAPDOOR,
-    MANGROVE_WALL_SIGN,
-    MANGROVE_WOOD,
-    MUD,
-    MUD_BRICK_SLAB,
-    MUD_BRICK_STAIRS,
-    MUD_BRICK_WALL,
-    MUD_BRICKS,
-    MUDDY_MANGROVE_ROOTS,
-    PACKED_MUD,
-    SCULK,
-    SCULK_CATALYST,
-    SCULK_SENSOR,
-    SCULK_SHRIEKER,
-    SCULK_VEIN,
-    REINFORCED_DEEPSLATE,
-    DISC_FRAGMENT_5,
-    RECOVERY_COMPASS,
-    TADPOLE_BUCKET,
-    TADPOLE_SPAWN_EGG,
-    ALLAY_SPAWN_EGG,
-    FROG_SPAWN_EGG,
-    WARDEN_SPAWN_EGG,
-    OAK_CHEST_BOAT,
-    SPRUCE_CHEST_BOAT,
-    BIRCH_CHEST_BOAT,
-    JUNGLE_CHEST_BOAT,
-    ACACIA_CHEST_BOAT,
-    DARK_OAK_CHEST_BOAT,
-    MANGROVE_CHEST_BOAT,
-    GOAT_HORN
-    ;
+    ZOMBIFIED_PIGLIN_SPAWN_EGG(57, "MONSTER_EGG", "ZOMBIE_PIGMAN_SPAWN_EGG");
 
 
     /**
@@ -1581,9 +1570,7 @@ public enum CompMaterial {
         this.material = mat;
     }
 
-    CompMaterial(String... legacy) {
-        this(0, legacy);
-    }
+    CompMaterial(String... legacy) {this(0, legacy);}
 
     /**
      * Checks if the version is 1.13 Aquatic Update or higher.
@@ -1594,7 +1581,6 @@ public enum CompMaterial {
      * </blockquote>
      *
      * @return true if 1.13 or higher.
-     *
      * @see #getVersion()
      * @see #supports(int)
      * @since 1.0.0
@@ -1632,7 +1618,6 @@ public enum CompMaterial {
      * @param name the name of the material.
      *
      * @return an optional that can be empty.
-     *
      * @since 5.1.0
      */
     @Nonnull
@@ -1644,7 +1629,6 @@ public enum CompMaterial {
      * The current version of the server.
      *
      * @return the current server version minor number.
-     *
      * @see #supports(int)
      * @since 2.0.0
      */
@@ -1705,7 +1689,6 @@ public enum CompMaterial {
      * @param name the material string that consists of the material name, data and separator character.
      *
      * @return the parsed CompMaterial.
-     *
      * @see #matchCompMaterial(String)
      * @since 3.0.0
      */
@@ -1748,7 +1731,6 @@ public enum CompMaterial {
      * @param item the ItemStack to match.
      *
      * @return an CompMaterial if matched any.
-     *
      * @throws IllegalArgumentException may be thrown as an unexpected exception.
      * @see #matchCompMaterial(Material)
      * @since 2.0.0
@@ -1800,7 +1782,6 @@ public enum CompMaterial {
      * @param data the data value of the material. Is always 0 or {@link #UNKNOWN_DATA_VALUE} when {@link Data#ISFLAT}
      *
      * @return an CompMaterial (with the same data value if specified)
-     *
      * @see #matchCompMaterial(Material)
      * @see #matchCompMaterial(int, byte)
      * @see #matchCompMaterial(ItemStack)
@@ -1839,7 +1820,6 @@ public enum CompMaterial {
      * @param name the name of the material to check.
      *
      * @return true if there's a duplicated material for this material, otherwise false.
-     *
      * @since 2.0.0
      */
     private static boolean isDuplicated(@Nonnull String name) {
@@ -1855,12 +1835,11 @@ public enum CompMaterial {
      * @param data the data value of the material.
      *
      * @return a parsed CompMaterial with the same ID and data value.
-     *
      * @see #matchCompMaterial(ItemStack)
      * @since 2.0.0
      * @deprecated this method loops through all the available materials and matches their ID using {@link #getId()}
-     *         which takes a really long time. Plugins should no longer support IDs. If you want, you can make a {@link Map} cache yourself.
-     *         This method obviously doesn't work for 1.13+ and will not be supported. This is only here for debugging purposes.
+     * which takes a really long time. Plugins should no longer support IDs. If you want, you can make a {@link Map} cache yourself.
+     * This method obviously doesn't work for 1.13+ and will not be supported. This is only here for debugging purposes.
      */
     @Nonnull
     @Deprecated
@@ -1881,7 +1860,6 @@ public enum CompMaterial {
      * @param name the material name to modify.
      *
      * @return an enum name.
-     *
      * @since 2.0.0
      */
     @Nonnull
@@ -1920,7 +1898,6 @@ public enum CompMaterial {
      * @param version the major version to be checked. "1." is ignored. E.g. 1.12 = 12 | 1.9 = 9
      *
      * @return true of the version is equal or higher than the current version.
-     *
      * @since 2.0.0
      */
     public static boolean supports(int version) {
@@ -1945,7 +1922,6 @@ public enum CompMaterial {
      * The only special exceptions are {@link #BRICKS} and {@link #NETHER_BRICKS}
      *
      * @return true if this material is a plural form material, otherwise false.
-     *
      * @since 8.0.0
      */
     private boolean isPlural() {
@@ -1989,7 +1965,6 @@ public enum CompMaterial {
      * @param materials the material names to check base material on.
      *
      * @return true if one of the given material names is similar to the base material.
-     *
      * @since 3.1.1
      */
     public boolean isOneOf(@Nullable Collection<String> materials) {
@@ -2055,7 +2030,6 @@ public enum CompMaterial {
      * @param name the material name to check.
      *
      * @return true if it's one of the legacy names, otherwise false.
-     *
      * @since 2.0.0
      */
     private boolean anyMatchLegacy(@Nonnull String name) {
@@ -2077,7 +2051,6 @@ public enum CompMaterial {
      * </pre>
      *
      * @return a more user-friendly enum name.
-     *
      * @since 3.0.0
      */
     @Override
@@ -2093,7 +2066,6 @@ public enum CompMaterial {
      * Spigot added material ID support back in 1.16+
      *
      * @return the ID of the material or <b>-1</b> if it's not a legacy material or the server doesn't support the material.
-     *
      * @see #matchCompMaterial(int, byte)
      * @since 2.2.0
      */
@@ -2117,7 +2089,6 @@ public enum CompMaterial {
      * or {@link ItemStack#getDurability()} if not damageable.
      *
      * @return data of this material, or 0 if none.
-     *
      * @since 1.0.0
      */
     @SuppressWarnings("deprecation")
@@ -2130,7 +2101,6 @@ public enum CompMaterial {
      * Uses data values on older versions.
      *
      * @return an ItemStack with the same material (and data value if in older versions.)
-     *
      * @see #setType(ItemStack)
      * @since 2.0.0
      */
@@ -2146,7 +2116,6 @@ public enum CompMaterial {
      * Parses the material of this CompMaterial.
      *
      * @return the material related to this CompMaterial based on the server version.
-     *
      * @since 1.0.0
      */
     @Nullable
@@ -2160,7 +2129,6 @@ public enum CompMaterial {
      * @param item item to check.
      *
      * @return true if the material is the same as the item's material (and data value if on older versions), otherwise false.
-     *
      * @since 1.0.0
      */
     @SuppressWarnings("deprecation")
@@ -2178,7 +2146,6 @@ public enum CompMaterial {
      * if you're going to parse and use the material/item later.
      *
      * @return true if the material exists in {@link Material} list.
-     *
      * @since 2.0.0
      */
     public boolean isSupported() {
@@ -2224,60 +2191,6 @@ public enum CompMaterial {
                 return false;
         }
     }
-
-    /*
-    ===================================================
-     */
-
-    /**
-     * Return true if the given block is air
-     */
-    public static boolean isAir(final Block block) {
-        return block == null || isAir(block.getType());
-    }
-
-    /**
-     * Returns if the given item stack is air
-     */
-    public static boolean isAir(@Nullable ItemStack item) {
-        if (item == null)
-            return true;
-
-        return isAir(item.getType());
-    }
-
-    /**
-     * Returns if the given material is air
-     */
-    public static boolean isAir(final Material material) {
-        return material == null || nameEquals(material, "AIR", "CAVE_AIR", "VOID_AIR", "LEGACY_AIR");
-    }
-
-    /**
-     * Create a wool from dye of certain amount.
-     */
-    public static ItemStack makeWool(final Color color, final int amount) {
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-            return new ItemStack(Material.valueOf(DyeColor.getByColor(color) + "_WOOL"), amount);
-
-        else
-            return new ItemStack(Material.valueOf("WOOL"), amount, DyeColor.getByColor(color).getWoolData());
-    }
-
-    // Utility method for evaluating matches.
-    private static boolean nameEquals(final Material mat, final String... names) {
-        final String matName = mat.toString();
-
-        for (final String name : names)
-            if (matName.equals(name))
-                return true;
-
-        return false;
-    }
-
-      /*
-    ===================================================
-     */
 
     /**
      * Used for data that need to be accessed during enum initialization.
