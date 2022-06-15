@@ -29,7 +29,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
@@ -1849,6 +1852,54 @@ public enum CompMaterial {
             if (materials.data == data && materials.getId() == id) return Optional.of(materials);
         }
         return Optional.empty();
+    }
+
+
+    /**
+     * Return true if the given block is air
+     */
+    public static boolean isAir(final Block block) {
+        return block == null || isAir(block.getType());
+    }
+
+    /**
+     * Returns if the given item stack is air
+     */
+    public static boolean isAir(@Nullable ItemStack item) {
+        if (item == null)
+            return true;
+
+        return isAir(item.getType());
+    }
+
+    /**
+     * Returns if the given material is air
+     */
+    public static boolean isAir(final Material material) {
+        return material == null || nameEquals(material, "AIR", "CAVE_AIR", "VOID_AIR", "LEGACY_AIR");
+    }
+
+    // Utility method for evaluating matches.
+    private static boolean nameEquals(final Material mat, final String... names) {
+        final String matName = mat.toString();
+
+        for (final String name : names)
+            if (matName.equals(name))
+                return true;
+
+        return false;
+    }
+
+
+    /**
+     * Create a wool from dye of certain amount.
+     */
+    public static ItemStack makeWool(final Color color, final int amount) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+            return new ItemStack(Material.valueOf(DyeColor.getByColor(color) + "_WOOL"), amount);
+
+        else
+            return new ItemStack(Material.valueOf("WOOL"), amount, DyeColor.getByColor(color).getWoolData());
     }
 
     /**
