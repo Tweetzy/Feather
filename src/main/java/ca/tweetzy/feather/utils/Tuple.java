@@ -1,6 +1,7 @@
 package ca.tweetzy.feather.utils;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Date Created: April 10 2022
@@ -8,8 +9,9 @@ import lombok.Data;
  *
  * @author Kiran Hart
  */
-@Data
-public final class Tuple<K, V> {
+@AllArgsConstructor
+@Getter
+public class Tuple<K, V> {
 
     private final K key;
     private final V value;

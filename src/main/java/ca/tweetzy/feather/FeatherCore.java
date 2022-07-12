@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Date Created: April 06 2022
@@ -33,9 +34,12 @@ import java.util.logging.Level;
  */
 public final class FeatherCore {
 
-    private final static int coreRevision = 2;
+    private final static Logger logger = Logger.getLogger("FeatherCore");
 
-    private final static String coreVersion = "2.0.0";
+
+    private final static int coreRevision = 3;
+
+    private final static String coreVersion = "3.0.0";
 
     private final static Set<PluginInfo> registeredPlugins = new HashSet<>();
     private ArrayList<BukkitTask> tasks = new ArrayList<>();
@@ -151,7 +155,7 @@ public final class FeatherCore {
     }
 
     private void register(JavaPlugin plugin, int pluginID, String icon, String libraryVersion) {
-        FeatherPlugin.getInstance().getConsole().sendMessage(Common.colorize("&8[#00ce74FeatherCore&8]#CBCBCB Hooked into #00ce74" + plugin.getDescription().getName()));
+        logger.info(Common.colorize("Hooked into " + plugin.getDescription().getName()));
         PluginInfo info = new PluginInfo(plugin, pluginID, icon, libraryVersion);
 
         // todo locale updater

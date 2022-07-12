@@ -48,7 +48,7 @@ public final class Common {
     }
 
     public static void log(String... messages) {
-        tell(FeatherPlugin.getInstance().getConsole(), messages);
+        tell(FeatherPlugin.getInstance().getServer().getConsoleSender(), messages);
     }
 
     public static void broadcast(String permission, boolean prefix, String... messages) {
@@ -81,8 +81,9 @@ public final class Common {
     /**
      * It takes a pattern and a sentence, and returns true if the pattern matches the sentence
      *
-     * @param pattern The pattern to match against.
+     * @param pattern  The pattern to match against.
      * @param sentence The sentence you want to check.
+     *
      * @return A boolean value.
      */
     public static boolean match(String pattern, String sentence) {

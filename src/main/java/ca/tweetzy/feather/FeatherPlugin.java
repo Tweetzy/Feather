@@ -1,14 +1,15 @@
 package ca.tweetzy.feather;
 
+import ca.tweetzy.feather.config.tweetzy.TweetzyYamlConfig;
 import ca.tweetzy.feather.database.DataManagerAbstract;
-import ca.tweetzy.feather.files.file.YamlFile;
 import ca.tweetzy.feather.utils.Common;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +23,6 @@ import java.util.logging.Level;
  */
 public abstract class FeatherPlugin extends JavaPlugin implements Listener {
 
-    protected YamlFile config = new YamlFile(getDataFolder() + "/config.yml");
-    protected ConsoleCommandSender console = Bukkit.getConsoleSender();
     private boolean emergencyStop = false;
 
     /**
@@ -38,6 +37,17 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
         return instance;
     }
 
+    /**
+     * All the configuration files belonging to the plugin.<br>
+     * This might for example be used for the ingame config editor.<br>
+     * <br>
+     * Do not include *storage* files here or anything similar that does not intend external modification and access.<br>
+     * <br>
+     * Do not include language files if you are using the Core's localization system.
+     */
+    public abstract @NotNull
+    List<TweetzyYamlConfig> getConfigs();
+
 	/*
 	-------------------------------------------------------------------------
 	Handle the loading & disabling
@@ -48,7 +58,6 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
     public final void onLoad() {
         try {
             getInstance();
-            this.config.createOrLoadWithComments();
             onWake();
         } catch (final Throwable throwable) {
             criticalErrorOnPluginStartup(throwable);
@@ -62,6 +71,8 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
             return;
         }
 
+        CommandSender console = Bukkit.getConsoleSender();
+
         console.sendMessage(" "); // blank line to separate chatter
         console.sendMessage(Common.colorize("#00a87f============================="));
         console.sendMessage(Common.colorize(String.format("#00ce74%s &fv&e%s #CBCBCBby #00ce74Tweetzy", getDescription().getName(), getDescription().getVersion())));
@@ -69,6 +80,8 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
 
         try {
             onFlight();
+            // the config.yml should be setup by now
+
 
             if (emergencyStop) {
                 console.sendMessage(Common.colorize("#8C1053~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
@@ -105,16 +118,31 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
         onSleep();
     }
 
+    /**
+     * Use {@link TweetzyYamlConfig} instead.
+     */
+    @Deprecated
     @Override
-    public final void reloadConfig() {
-        try {
-            this.config.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        onStretch();
+    public @NotNull
+    FileConfiguration getConfig() {
+        return super.getConfig();
     }
 
+    /**
+     * Use {@link TweetzyYamlConfig} instead.
+     */
+    @Deprecated
+    @Override
+    public void reloadConfig() {
+    }
+
+    /**
+     * Use {@link TweetzyYamlConfig} instead.
+     */
+    @Deprecated
+    @Override
+    public void saveConfig() {
+    }
 
 	/*
 	-------------------------------------------------------------------------
@@ -137,12 +165,6 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
      * Called during {@link JavaPlugin#onDisable()}
      */
     protected void onSleep() {
-    }
-
-    /**
-     * Called during {@link JavaPlugin#reloadConfig()}
-     */
-    protected void onStretch() {
     }
 
     /*
@@ -173,14 +195,6 @@ public abstract class FeatherPlugin extends JavaPlugin implements Listener {
 
     protected int getSpigotId() {
         return -1;
-    }
-
-    public ConsoleCommandSender getConsole() {
-        return this.console;
-    }
-
-    public YamlFile getCoreConfig() {
-        return this.config;
     }
 
     protected void emergencyStop() {
