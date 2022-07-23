@@ -16,13 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +44,7 @@ public final class FeatherCore {
 
     public static boolean hasShading() {
         // sneaky hack to check the package name since maven tries to re-shade all references to the package string
-        return !FeatherCore.class.getPackage().getName().equals(new String(new char[] {'c', 'o', 'm', '.', 's', 'o', 'n', 'g', 'o', 'd', 'a', '.', 'c', 'o', 'r', 'e'}));
+        return !FeatherCore.class.getPackage().getName().equals(new String(new char[] {'c', 'a', '.', 't', 'w', 'e', 'e', 't', 'z', 'y', '.', 'f', 'e', 'a', 't', 'h', 'e', 'r'}));
     }
 
     /*
