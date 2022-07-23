@@ -2,6 +2,7 @@ package ca.tweetzy.feather.utils;
 
 import ca.tweetzy.feather.comp.enums.ServerVersion;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import java.util.Set;
  *
  * @author Kiran Hart
  */
+@UtilityClass
 public final class PlayerUtil {
 
     /**
@@ -24,7 +26,7 @@ public final class PlayerUtil {
      * @param player The player to get the hand of.
      * @return The item in the player's hand.
      */
-    public static ItemStack getHand(@NonNull final Player player) {
+    public ItemStack getHand(@NonNull final Player player) {
         return getHand(player, Hand.MAIN);
     }
 
@@ -35,7 +37,7 @@ public final class PlayerUtil {
      * @param hand The hand to get the item from.
      * @return The item in the player's hand.
      */
-    public static ItemStack getHand(@NonNull final Player player, Hand hand) {
+    public ItemStack getHand(@NonNull final Player player, Hand hand) {
         if (ServerVersion.isServerVersionBelow(ServerVersion.V1_9)) {
             return player.getInventory().getItemInHand();
         }
@@ -51,7 +53,7 @@ public final class PlayerUtil {
      * @param def The default value to return if no permission is found.
      * @return The highest number in the permission.
      */
-    public static int getNumberPermission(@NonNull final Player player, @NonNull final String permission, final int def) {
+    public int getNumberPermission(@NonNull final Player player, @NonNull final String permission, final int def) {
         final Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
 
         boolean set = false;
@@ -92,7 +94,7 @@ public final class PlayerUtil {
      * @param player The player to check the inventory of.
      * @return A boolean value.
      */
-    public static boolean isInventoryEmpty(@NonNull final Player player) {
+    public boolean isInventoryEmpty(@NonNull final Player player) {
         final ItemStack[] everything = (ItemStack[]) ArrayUtils.addAll(player.getInventory().getContents(), player.getInventory().getArmorContents());
 
         for (final ItemStack i : everything)
@@ -100,6 +102,48 @@ public final class PlayerUtil {
                 return false;
 
         return true;
+    }
+
+    /**
+     * Get the total amount of an item in the player's inventory
+     *
+     * @param player is the player being checked
+     * @param stack  is the item you want to find
+     * @return the total count of the item(s)
+     */
+    public int getItemCountInPlayerInventory(@NonNull final Player player, ItemStack stack) {
+        int total = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null || !item.isSimilar(stack)) continue;
+            total += item.getAmount();
+        }
+        return total;
+    }
+
+    /**
+     * Removes a set amount of a specific item from the player inventory
+     *
+     * @param player is the player you want to remove the item from
+     * @param stack  is the item that you want to remove
+     * @param amount is the amount of items you want to remove.
+     */
+    public void removeSpecificItemQuantityFromPlayer(@NonNull final Player player, @NonNull final ItemStack stack, int amount) {
+        int i = amount;
+        for (int j = 0; j < player.getInventory().getSize(); j++) {
+            ItemStack item = player.getInventory().getItem(j);
+            if (item == null) continue;
+            if (!item.isSimilar(stack)) continue;
+
+            if (i >= item.getAmount()) {
+                player.getInventory().clear(j);
+                i -= item.getAmount();
+            } else if (i > 0) {
+                item.setAmount(item.getAmount() - i);
+                i = 0;
+            } else {
+                break;
+            }
+        }
     }
 }
 
