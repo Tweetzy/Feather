@@ -21,6 +21,7 @@
  */
 package ca.tweetzy.feather.comp;
 
+import ca.tweetzy.feather.utils.Common;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -152,7 +153,7 @@ public final class Titles implements Cloneable {
         Objects.requireNonNull(player, "Cannot send title to null player");
         if (title == null && subtitle == null) return;
         if (ReflectionUtils.supports(11)) {
-            player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+            player.sendTitle(Common.colorize(title), Common.colorize(subtitle), fadeIn, stay, fadeOut);
             return;
         }
 
@@ -161,11 +162,11 @@ public final class Titles implements Cloneable {
             ReflectionUtils.sendPacket(player, timesPacket);
 
             if (title != null) {
-                Object titlePacket = PACKET_PLAY_OUT_TITLE.invoke(TITLE, CHAT_COMPONENT_TEXT.invoke(title), fadeIn, stay, fadeOut);
+                Object titlePacket = PACKET_PLAY_OUT_TITLE.invoke(TITLE, CHAT_COMPONENT_TEXT.invoke(Common.colorize(title)), fadeIn, stay, fadeOut);
                 ReflectionUtils.sendPacket(player, titlePacket);
             }
             if (subtitle != null) {
-                Object subtitlePacket = PACKET_PLAY_OUT_TITLE.invoke(SUBTITLE, CHAT_COMPONENT_TEXT.invoke(subtitle), fadeIn, stay, fadeOut);
+                Object subtitlePacket = PACKET_PLAY_OUT_TITLE.invoke(SUBTITLE, CHAT_COMPONENT_TEXT.invoke(Common.colorize(subtitle)), fadeIn, stay, fadeOut);
                 ReflectionUtils.sendPacket(player, subtitlePacket);
             }
         } catch (Throwable throwable) {

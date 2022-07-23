@@ -278,7 +278,6 @@ public final class Common {
      */
     public static boolean callEvent(final Event event) {
         Bukkit.getPluginManager().callEvent(event);
-
         return event instanceof Cancellable ? !((Cancellable) event).isCancelled() : true;
     }
 
