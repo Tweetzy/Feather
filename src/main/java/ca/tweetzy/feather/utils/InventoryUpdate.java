@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Matsubara
+ * Copyright (c) 2021 Matsubara
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
 package ca.tweetzy.feather.utils;
 
 import ca.tweetzy.feather.comp.ReflectionUtils;
-import ca.tweetzy.feather.comp.enums.ServerVersion;
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -35,7 +35,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.Set;
 
 /**
  * A utility class for update the inventory of a player.
@@ -52,65 +52,56 @@ public final class InventoryUpdate {
     private final static Class<?> CONTAINER;
     private final static Class<?> CONTAINERS;
     private final static Class<?> ENTITY_PLAYER;
+    private final static Class<?> I_CHAT_MUTABLE_COMPONENT;
 
     // Methods.
     private final static MethodHandle getHandle;
     private final static MethodHandle getBukkitView;
+    private final static MethodHandle literal;
 
     // Constructors.
-    private static Constructor<?> chatMessage;
-    private static Constructor<?> packetPlayOutOpenWindow;
+    private final static MethodHandle chatMessage;
+    private final static MethodHandle packetPlayOutOpenWindow;
 
     // Fields.
-    private static Field activeContainer;
-    private static Field windowId;
+    private final static MethodHandle activeContainer;
+    private final static MethodHandle windowId;
+
+    // Methods factory.
+    private final static MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+
+    private final static Set<String> UNOPENABLES = Sets.newHashSet("CRAFTING", "CREATIVE", "PLAYER");
 
     static {
+        boolean supports19 = ReflectionUtils.supports(19);
+
         // Initialize classes.
         CRAFT_PLAYER = ReflectionUtils.getCraftClass("entity.CraftPlayer");
-        CHAT_MESSAGE = ReflectionUtils.getNMSClass("network.chat", "ChatMessage");
+        CHAT_MESSAGE = supports19 ? null : ReflectionUtils.getNMSClass("network.chat", "ChatMessage");
         PACKET_PLAY_OUT_OPEN_WINDOW = ReflectionUtils.getNMSClass("network.protocol.game", "PacketPlayOutOpenWindow");
         I_CHAT_BASE_COMPONENT = ReflectionUtils.getNMSClass("network.chat", "IChatBaseComponent");
-        // Check if we use containers, otherwise can throw errors on older versions.
+        // Check if we use containers, otherwise, can throw errors on older versions.
         CONTAINERS = useContainers() ? ReflectionUtils.getNMSClass("world.inventory", "Containers") : null;
         ENTITY_PLAYER = ReflectionUtils.getNMSClass("server.level", "EntityPlayer");
         CONTAINER = ReflectionUtils.getNMSClass("world.inventory", "Container");
+        I_CHAT_MUTABLE_COMPONENT = supports19 ? ReflectionUtils.getNMSClass("network.chat", "IChatMutableComponent") : null;
 
-        MethodHandle handle = null, bukkitView = null;
+        // Initialize methods.
+        getHandle = getMethod(CRAFT_PLAYER, "getHandle", MethodType.methodType(ENTITY_PLAYER));
+        getBukkitView = getMethod(CONTAINER, "getBukkitView", MethodType.methodType(InventoryView.class));
+        literal = supports19 ? getMethod(I_CHAT_BASE_COMPONENT, "b", MethodType.methodType(I_CHAT_MUTABLE_COMPONENT, String.class), true) : null;
 
-        try {
-            int version = ReflectionUtils.VER;
-            MethodHandles.Lookup lookup = MethodHandles.lookup();
+        // Initialize constructors.
+        chatMessage = supports19 ? null : getConstructor(CHAT_MESSAGE, String.class);
+        packetPlayOutOpenWindow =
+                (useContainers()) ?
+                        getConstructor(PACKET_PLAY_OUT_OPEN_WINDOW, int.class, CONTAINERS, I_CHAT_BASE_COMPONENT) :
+                        // Older versions use String instead of Containers, and require an int for the inventory size.
+                        getConstructor(PACKET_PLAY_OUT_OPEN_WINDOW, int.class, String.class, I_CHAT_BASE_COMPONENT, int.class);
 
-            // Initialize methods.
-            handle = lookup.findVirtual(CRAFT_PLAYER, "getHandle", MethodType.methodType(ENTITY_PLAYER));
-            bukkitView = lookup.findVirtual(CONTAINER, "getBukkitView", MethodType.methodType(InventoryView.class));
-
-            // Initialize constructors.
-            chatMessage = CHAT_MESSAGE.getConstructor(String.class, Object[].class);
-            packetPlayOutOpenWindow =
-                    (useContainers()) ?
-                            PACKET_PLAY_OUT_OPEN_WINDOW.getConstructor(int.class, CONTAINERS, I_CHAT_BASE_COMPONENT) :
-                            // Older versions use String instead of Containers, and require an int for the inventory size.
-                            PACKET_PLAY_OUT_OPEN_WINDOW.getConstructor(int.class, String.class, I_CHAT_BASE_COMPONENT, int.class);
-
-            // Initialize fields.
-            if (version == 18) {
-                // "bW" in 1.18 & 1.18.1, "bV" in 1.18.2.
-                activeContainer = ENTITY_PLAYER.getField("bW");
-                if (!activeContainer.getType().isInstance(CONTAINER)) {
-                    activeContainer = ENTITY_PLAYER.getField("bV");
-                }
-            } else {
-                activeContainer = ENTITY_PLAYER.getField((version == 17) ? "bV" : "activeContainer");
-            }
-            windowId = (version > 16) ? CONTAINER.getField("j") : CONTAINER.getField("windowId");
-        } catch (ReflectiveOperationException exception) {
-            exception.printStackTrace();
-        }
-
-        getHandle = handle;
-        getBukkitView = bukkitView;
+        // Initialize fields.
+        activeContainer = getField(ENTITY_PLAYER, CONTAINER, "activeContainer", "bV", "bW", "bU", "containerMenu");
+        windowId = getField(CONTAINER, int.class, "windowId", "j", "containerId");
     }
 
     /**
@@ -121,25 +112,30 @@ public final class InventoryUpdate {
      */
 
     public static void updateInventory(JavaPlugin plugin, Player player, String newTitle) {
-        Validate.notNull(player, "Cannot update inventory to null player.");
+        Preconditions.checkArgument(player != null, "Cannot update inventory to null player.");
 
         try {
             // Get EntityPlayer from CraftPlayer.
             Object craftPlayer = CRAFT_PLAYER.cast(player);
             Object entityPlayer = getHandle.invoke(craftPlayer);
 
-            if (ServerVersion.isServerVersionBelow(ServerVersion.V1_9) && newTitle != null && newTitle.length() > 32) {
+            if (newTitle != null && newTitle.length() > 32) {
                 newTitle = newTitle.substring(0, 32);
-            }
+            } else if (newTitle == null) newTitle = "";
 
             // Create new title.
-            Object title = chatMessage.newInstance(newTitle != null ? newTitle : "", new Object[]{});
+            Object title;
+            if (ReflectionUtils.supports(19)) {
+                title = literal.invoke(newTitle);
+            } else {
+                title = chatMessage.invoke(newTitle);
+            }
 
             // Get activeContainer from EntityPlayer.
-            Object activeContainer = InventoryUpdate.activeContainer.get(entityPlayer);
+            Object activeContainer = InventoryUpdate.activeContainer.invoke(entityPlayer);
 
             // Get windowId from activeContainer.
-            Integer windowId = (Integer) InventoryUpdate.windowId.get(activeContainer);
+            Integer windowId = (Integer) InventoryUpdate.windowId.invoke(activeContainer);
 
             // Get InventoryView from activeContainer.
             Object bukkitView = getBukkitView.invoke(activeContainer);
@@ -152,7 +148,7 @@ public final class InventoryUpdate {
             if ((type == InventoryType.WORKBENCH || type == InventoryType.ANVIL) && !useContainers()) return;
 
             // You can't reopen crafting, creative and player inventory.
-            if (Arrays.asList("CRAFTING", "CREATIVE", "PLAYER").contains(type.name())) return;
+            if (UNOPENABLES.contains(type.name())) return;
 
             int size = view.getTopInventory().getSize();
 
@@ -179,8 +175,8 @@ public final class InventoryUpdate {
             // Create packet.
             Object packet =
                     (useContainers()) ?
-                            packetPlayOutOpenWindow.newInstance(windowId, object, title) :
-                            packetPlayOutOpenWindow.newInstance(windowId, object, title, size);
+                            packetPlayOutOpenWindow.invoke(windowId, object, title) :
+                            packetPlayOutOpenWindow.invoke(windowId, object, title, size);
 
             // Send packet sync.
             ReflectionUtils.sendPacketSync(player, packet);
@@ -189,6 +185,69 @@ public final class InventoryUpdate {
             player.updateInventory();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+        }
+    }
+
+    private static MethodHandle getField(Class<?> refc, Class<?> instc, String name, String... extraNames) {
+        MethodHandle handle = getFieldHandle(refc, instc, name);
+        if (handle != null) return handle;
+
+        if (extraNames != null && extraNames.length > 0) {
+            if (extraNames.length == 1) return getField(refc, instc, extraNames[0]);
+            return getField(refc, instc, extraNames[0], removeFirst(extraNames));
+        }
+
+        return null;
+    }
+
+    private static String[] removeFirst(String[] array) {
+        int length = array.length;
+
+        String[] result = new String[length - 1];
+        System.arraycopy(array, 1, result, 0, length - 1);
+
+        return result;
+    }
+
+    private static MethodHandle getFieldHandle(Class<?> refc, Class<?> inscofc, String name) {
+        try {
+            for (Field field : refc.getFields()) {
+                field.setAccessible(true);
+
+                if (!field.getName().equalsIgnoreCase(name)) continue;
+
+                if (field.getType().isInstance(inscofc) || field.getType().isAssignableFrom(inscofc)) {
+                    return LOOKUP.unreflectGetter(field);
+                }
+            }
+            return null;
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
+    }
+
+    private static MethodHandle getConstructor(Class<?> refc, Class<?>... types) {
+        try {
+            Constructor<?> constructor = refc.getDeclaredConstructor(types);
+            constructor.setAccessible(true);
+            return LOOKUP.unreflectConstructor(constructor);
+        } catch (ReflectiveOperationException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    private static MethodHandle getMethod(Class<?> refc, String name, MethodType type) {
+        return getMethod(refc, name, type, false);
+    }
+
+    private static MethodHandle getMethod(Class<?> refc, String name, MethodType type, boolean isStatic) {
+        try {
+            if (isStatic) return LOOKUP.findStatic(refc, name, type);
+            return LOOKUP.findVirtual(refc, name, type);
+        } catch (ReflectiveOperationException exception) {
+            exception.printStackTrace();
+            return null;
         }
     }
 
@@ -252,6 +311,7 @@ public final class InventoryUpdate {
          * Get the container based on the current open inventory of the player.
          *
          * @param type type of inventory.
+         *
          * @return the container.
          */
         public static Containers getType(InventoryType type, int size) {
