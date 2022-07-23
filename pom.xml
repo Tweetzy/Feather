@@ -5,7 +5,7 @@
 
     <groupId>ca.tweetzy</groupId>
     <artifactId>feather</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
@@ -71,6 +71,15 @@
             <version>2.11.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Tweetzy Plugins -->
+        <dependency>
+            <groupId>ca.tweetzy</groupId>
+            <artifactId>skulls</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Non-Spigot Plugins -->
         <dependency>

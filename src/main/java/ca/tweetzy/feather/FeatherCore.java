@@ -33,7 +33,7 @@ public final class FeatherCore {
 
     private final static int coreRevision = 3;
 
-    private final static String coreVersion = "3.0.0";
+    private final static String coreVersion = "3.1.0";
 
     private final static Set<PluginInfo> registeredPlugins = new HashSet<>();
     private ArrayList<BukkitTask> tasks = new ArrayList<>();
